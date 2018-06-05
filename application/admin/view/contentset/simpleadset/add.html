@@ -1,0 +1,40 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label for="c-custom_id" class="control-label col-xs-12 col-sm-2">{:__('Custom_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-custom_id" data-rule="required" data-source="custom/index" class="form-control selectpage" name="row[custom_id]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-rid" class="control-label col-xs-12 col-sm-2">{:__('Rid')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-rid" data-rule="required" class="form-control" name="row[rid]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-title" class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-title" class="form-control" name="row[title]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="text" value="hidden">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-url_to" class="control-label col-xs-12 col-sm-2">{:__('Url_to')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-url_to" class="form-control" name="row[url_to]" type="text">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

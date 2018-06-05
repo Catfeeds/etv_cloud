@@ -1,0 +1,52 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label for="c-mac" class="control-label col-xs-12 col-sm-2">{:__('Mac')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-mac" data-rule="required" class="form-control" name="row[mac]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-wifi_ssid" class="control-label col-xs-12 col-sm-2">{:__('Wifi_ssid')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-wifi_ssid" data-rule="required" class="form-control" name="row[wifi_ssid]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-wifi_passwd" class="control-label col-xs-12 col-sm-2">{:__('Wifi_passwd')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-wifi_passwd" class="form-control" name="row[wifi_passwd]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-wifi_psk_type" class="control-label col-xs-12 col-sm-2">{:__('Wifi_psk_type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-wifi_psk_type" data-rule="required" class="form-control" name="row[wifi_psk_type]" type="text" value="psk2">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-wifi_hot_spot" class="control-label col-xs-12 col-sm-2">{:__('Wifi_hot_spot')}:</label>
+        <div class="col-xs-12 col-sm-8">
+                        
+            <select  id="c-wifi_hot_spot" data-rule="required" class="form-control selectpicker" name="row[wifi_hot_spot]">
+                {foreach name="wifiHotSpotList" item="vo"}
+                    <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="text" value="hidden">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

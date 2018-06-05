@@ -1,0 +1,76 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label for="c-custom_id" class="control-label col-xs-12 col-sm-2">{:__('Custom_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-custom_id" data-rule="required" data-source="custom/index" class="form-control selectpage" name="row[custom_id]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-rid" class="control-label col-xs-12 col-sm-2">{:__('Rid')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-rid" data-rule="required" class="form-control" name="row[rid]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-save_set" class="control-label col-xs-12 col-sm-2">{:__('Save_set')}:</label>
+        <div class="col-xs-12 col-sm-8">
+                        
+            <select  id="c-save_set" data-rule="required" class="form-control selectpicker" name="row[save_set]">
+                {foreach name="saveSetList" item="vo"}
+                    <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            
+            <div class="radio">
+            {foreach name="statusList" item="vo"}
+            <label for="row[status]-{$key}"><input id="row[status]-{$key}" name="row[status]" type="radio" value="{$key}" {in name="key" value="1"}checked{/in} /> {$vo}</label> 
+            {/foreach}
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-weigh" class="control-label col-xs-12 col-sm-2">{:__('Weigh')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-weigh" data-rule="required" class="form-control" name="row[weigh]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-column_weigh" class="control-label col-xs-12 col-sm-2">{:__('Column_weigh')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-column_weigh" class="form-control " rows="5" name="row[column_weigh]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-column_status" class="control-label col-xs-12 col-sm-2">{:__('Column_status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-column_status" class="form-control " rows="5" name="row[column_status]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-resource_weigh" class="control-label col-xs-12 col-sm-2">{:__('Resource_weigh')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-resource_weigh" class="form-control " rows="5" name="row[resource_weigh]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-resource_status" class="control-label col-xs-12 col-sm-2">{:__('Resource_status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-resource_status" class="form-control " rows="5" name="row[resource_status]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

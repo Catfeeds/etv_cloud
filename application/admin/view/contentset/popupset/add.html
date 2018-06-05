@@ -1,0 +1,120 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Custom_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[custom_id]', $custom_lists, null,
+            ['class'=>'form-control selectpicker custom_id', 'required'=>'',
+            'data-live-search'=>"true" ])}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Save_set')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[save_set]', $save_set_info)}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Repeat_set')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[repeat_set]', $repeat_set_info)}
+        </div>
+    </div>
+    <div class="form-group weekday_div" style="display: none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Weekday')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_checkboxs('row[weekday][]', $weekday_info)}
+        </div>
+    </div>
+    <div class="form-group no_repeat_data_div">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-no_repeat_date"  class="form-control datetimepicker"  data-date-format="YYYY-MM-DD hh:mm:ss"  name="row[no_repeat_date]" type="text">
+        </div>
+    </div>
+    <div class="form-group start_time_div" style="display: none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-start_time"  class="form-control datetimepicker" data-date-format="hh:mm:ss" name="row[start_time]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Break_set')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[break_set]', $break_set_info)}
+        </div>
+    </div>
+    <div class="form-group stay_time_div" style="display: none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Stay_time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-stay_time" data-rule="integer(+)" class="form-control" name="row[stay_time]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Ad_type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[ad_type]', $ad_type_info, null, ['class'=>'form-control ad_type', 'required'=>''])}
+        </div>
+    </div>
+    <div class="form-group position_div" style="display: none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Position')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[position]', $popup_position_set_info, null, ['class'=>'form-control position'])}
+        </div>
+    </div>
+    <div class="form-group words_tips_div" style="display: none;">
+        <label for="c-words_tips" class="control-label col-xs-12 col-sm-2">{:__('Words tips')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-words_tips" data-rule="length(~200)" class="form-control" name="row[words_tips]" type="text">
+        </div>
+    </div>
+    <!--视频-->
+    <div class="form-group video_resource_div">
+        <label for="c-video" class="control-label col-xs-12 col-sm-2">{:__('Resource')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-video" data-rule="length(~100)" class="form-control" readonly type="text">
+                <input id="c-video-rid" type="hidden" name="row[video_resource_id]">
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button type="button" id="fachoose-video" class="btn btn-primary popup_fachoose" data-input-id="c-video" data-mimetype="video/*" data-multiple="false">
+                            <i class="fa fa-list"></i> {:__('Choose')}
+                        </button>
+                    </span>
+                </div>
+                <span class="msg-box n-right"></span>
+            </div>
+        </div>
+    </div>
+    <!--图片-->
+    <div class="form-group image_resource_div" style="display: none;">
+        <label for="c-image" class="control-label col-xs-12 col-sm-2">{:__('Resource')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-image" data-rule="length(~100)" class="form-control" readonly type="text" >
+                <input id="c-image-rid" type="hidden" name="row[image_resource_id]">
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button type="button" id="fachoose-image" class="btn btn-primary popup_fachoose" data-input-id="c-image" data-mimetype="image/*" data-multiple="false">
+                            <i class="fa fa-list"></i> {:__('Choose')}
+                        </button>
+                    </span>
+                </div>
+                <span class="msg-box n-right"></span>
+            </div>
+            <ul class="row list-inline plupload-preview" id="p-image"></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[status]', ['normal'=>__('Normal'), 'hidden'=>__('Hidden')])}
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

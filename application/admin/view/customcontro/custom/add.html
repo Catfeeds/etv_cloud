@@ -1,0 +1,80 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Parent')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[pid]', $customdata, null, ['class'=>'form-control', 'required'=>''])}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-custom_id" class="control-label col-xs-12 col-sm-2">{:__('Custom_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-custom_id" data-rule="required;length(~32)" class="form-control" name="row[custom_id]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-custom_name" class="control-label col-xs-12 col-sm-2">{:__('Custom_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-custom_name" data-rule="required;length(~64)" class="form-control" name="row[custom_name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-full_name" class="control-label col-xs-12 col-sm-2">{:__('Full_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-full_name" data-rule="required;length(~64)" class="form-control" name="row[full_name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Custom_type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[custom_type]', $custom_type_arr, null, ['class'=>'form-control selectpicker', 'data-rule'=>'required'])}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-handler" class="control-label col-xs-12 col-sm-2">{:__('Handler')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-handler" data-rule="required;length(~32)" class="form-control" name="row[handler]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-phone" class="control-label col-xs-12 col-sm-2">{:__('Phone')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-phone" data-rule="required;integer;length(11)" class="form-control" name="row[phone]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('SelectAddress')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="form-inline" data-toggle="cxselect" data-selects="province,city,area">
+                <select class="province form-control" data-rule="required" name="row[province_id]" data-url="ajax/area"></select>&nbsp;
+                <select class="city form-control" data-rule="required" name="row[city_id]" data-url="ajax/myarea"></select>&nbsp;
+                <select class="area form-control" data-rule="required" name="row[area_id]" data-url="ajax/myarea"></select>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-detail_address" class="control-label col-xs-12 col-sm-2">{:__('Detail_address')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-detail_address" data-rule="required" class="form-control" name="row[detail_address]" data-toggle="addresspicker" data-input-id="c-detail_address" type="text" value="-">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-lng" class="control-label col-xs-12 col-sm-2">{:__('Lng')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-lng" data-rule="required" class="form-control" name="row[lng]" readonly="readonly">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-lat" class="control-label col-xs-12 col-sm-2">{:__('Lat')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-lat" class="form-control" name="row[lat]" readonly="readonly">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

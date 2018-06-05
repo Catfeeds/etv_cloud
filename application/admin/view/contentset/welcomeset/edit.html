@@ -1,0 +1,33 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label for="c-title" class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-title" data-rule="required;length(~40)" class="form-control" name="row[title]" type="text" value="{$row.title}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Stay_set')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[stay_set]', $stay_set_list, $row.stay_set, ['class'=>'form-control stay_set', 'required'=>''])}
+        </div>
+    </div>
+    <div class="form-group stay_time_div" style="display: none;">
+        <label for="c-stay_time" class="control-label col-xs-12 col-sm-2">{:__('Stay_time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-stay_time" data-rule="required;integer(+)" class="form-control" name="row[stay_time]" type="text" value="{$row.stay_time}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-weigh" class="control-label col-xs-12 col-sm-2">{:__('Weigh')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-weigh" data-rule="required;integer(+)" class="form-control" name="row[weigh]" type="number" value="{$row.weigh}">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

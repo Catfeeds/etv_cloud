@@ -70,7 +70,7 @@ class Wifiset extends Backend
 	            ->with('wifiset')
                 ->count();
 
-            $list = model('DeviceBasics')
+	        $list = model('DeviceBasics')
                 ->where($where)
 	            ->where($where_customid)
 	            ->with('custom')
@@ -78,8 +78,8 @@ class Wifiset extends Backend
 	            ->order('id', 'desc')
                 ->limit($offset, $limit)
                 ->select();
-
             $list = collection($list)->toArray();
+
             $result = array("total" => $total, "rows" => $list);
 
             return json($result);

@@ -26,6 +26,10 @@ class DeviceBasics extends Model
 		return $this->belongsTo('device_wifiset', 'mac', 'mac')->setEagerlyType(1);
 	}
 
+	public function device_sleep(){
+		return $this->hasMany('device_sleep', 'mac', 'mac');
+	}
+
 	/**
 	 * 获取客户列表(不含有设备的不获取)
 	 */

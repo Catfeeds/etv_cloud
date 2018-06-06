@@ -2,6 +2,8 @@
 
 namespace app\admin\library\traits;
 
+use think\Db;
+
 trait Backend
 {
 

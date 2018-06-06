@@ -74,6 +74,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
         },
         batch_set: function () {
             Controller.api.tree_controller();
+            $("input[name='row[wifi_psk_type]']").click(function(){
+                var wifi_psk_type = $(this).val();
+                if(wifi_psk_type == 'none'){
+                    $(".wifi_passwd_div").hide();
+                }else{
+                    $(".wifi_passwd_div").show();
+                }
+            });
         },
         api: {
             bindevent: function () {
@@ -112,19 +120,25 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
             tree_controller: function(){
                 Form.api.bindevent($("form[role=form]"), null, null, function () {
                     if ($("#treeview").size() > 0) {
-                        var mac_id = $("#treeview").jstree("get_bottom_checked");
-                        $(mac_id).each(function(i){
+                        // 处理选中数据
+                        var check_list = $("#treeview").jstree("get_checked");
+                        var mac_id = new Array();
+                        var custom_id = new Array();
+                        $(check_list).each(function(i){
                             if(isNaN(this)){
-                                mac_id.splice(i,1);
+                                custom_id.push(this);
+                            }else{
+                                mac_id.push(this);
                             }
                         });
                         $("input[name='row[mac_ids]']").val(mac_id.join(','));
+                        $("input[name='row[custom_id]']").val(custom_id.join(','));
                     }
                     return true;
                 });
                 //销毁已有的节点树
                 $("#treeview").jstree("destroy");
-                Controller.api.rendertree(nodeData);
+                Controller.api.rendertree();
                 //全选和展开
                 $(document).on("click", "#checkall", function () {
                     $("#treeview").jstree($(this).prop("checked") ? "check_all" : "uncheck_all");
@@ -133,7 +147,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                     $("#treeview").jstree($(this).prop("checked") ? "open_all" : "close_all");
                 });
             },
-            rendertree: function (content) {
+            rendertree: function () {
                 $("#treeview")
                     .on('redraw.jstree', function (e) {
                         $(".layer-footer").attr("domrefresh", Math.random());
@@ -143,13 +157,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         "checkbox": {
                             "keep_selected_style": false,
                             'three_state' : false,
-                            //'cascade' : 'undetermined'
                             'cascade' : 'down'
                         },
                         "plugins": ["checkbox", "types"],
                         "core": {
                             'check_callback': true,
-                            "data": content
+                            "data": {
+                                "url" : "devices/wifiset/get_tree_list",
+                                "data": function(node){
+                                    return {"id" : node.id};
+                                }
+                            }
                         }
                     });
             }

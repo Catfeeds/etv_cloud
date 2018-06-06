@@ -61,7 +61,7 @@ class Customlist extends Controller
 				$custom_key = array_keys($content_set_config);
 				if(in_array($admin_id, $custom_key)){
 					if($content_set_config[$admin_id] == "*"){  //查询全部
-						return Db::name('custom')->field('id,custom_name')->select();
+						return Db::name('custom')->cache(true,600)->field('id,custom_name')->select();
 					}else{
 						$custom_where = explode(",", $content_set_config[$admin_id]);
 						return Db::name('custom')->where('id', 'in', $custom_where)->field('id,custom_name')->select();

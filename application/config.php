@@ -20,7 +20,7 @@ return [
     // 应用调试模式
     'app_debug'              => Env::get('app.debug', true),
     // 应用Trace
-    'app_trace'              => Env::get('app.trace', true),
+    'app_trace'              => Env::get('app.trace', false),
     // 应用模式状态
     'app_status'             => '',
     // 是否支持多模块
@@ -192,7 +192,7 @@ return [
         // SESSION_ID的提交变量,解决flash上传跨域
         'var_session_id' => '',
         // SESSION 前缀
-        'prefix'         => 'etv2018',
+        'prefix'         => 'etv_cloud018',
         // 驱动方式 支持redis memcache memcached
         'type'           => '',
         // 是否自动开启 SESSION

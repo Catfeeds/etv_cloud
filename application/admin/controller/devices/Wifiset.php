@@ -31,6 +31,9 @@ class Wifiset extends Backend
 
 	protected $admin_id = null;
 
+	protected $noNeedLogin = ['get_tree_list'];
+	protected $noNeedRight = ['get_tree_list'];
+
     public function _initialize()
     {
         parent::_initialize();
@@ -166,7 +169,24 @@ class Wifiset extends Backend
 				try {
 					//批量数据处理
 					$maclist = []; //MAC集合
-					$basics_mac = Db::name('device_basics')->where('id', 'in', $params['mac_ids'])->field('mac')->select();
+					$where_basics = [];
+					// 选中设备的条件
+					$query_basics = Db::name('device_basics');
+					if(!empty($params['custom_id'])){
+						$custom_id = DeviceBasics::handle_character(explode(",", $params['custom_id']));
+						$where_basics['custom_id'] = ['in', $custom_id];
+						$query_basics->where($where_basics);
+					}
+					if(!empty($params['mac_ids'])){
+						$where_basics['mac'] = ['in', $params['mac_ids']];
+						$query_basics->whereOr($where_basics);
+					}
+					if(empty($where_basics))
+						$this->error(__('Choose device'));
+
+					// 查询需要更改的mac list
+					$basics_mac = $query_basics->field('mac')->select();
+
 					if(!empty($basics_mac)){
 						$maclist = array_column($basics_mac, 'mac');
 						foreach($maclist as $key=>$value){
@@ -207,9 +227,25 @@ class Wifiset extends Backend
 		$custom_list = $this->customlist_class->custom_list($this->admin_id); //获取客户列表
 		if(empty($custom_list))
 			$this->error(__('You have no permission'));
-		$nodeList = DeviceBasics::getTreeList([], array_column($custom_list, 'id')); // 生出树状图
-		$this->assign("nodeList", $nodeList);
 		return $this->view->fetch();
 	}
+
+	public function get_tree_list($id=null){
+		if(empty($id)){
+			$this->error(__('Unknown data format'));
+		}
+		$nodelist = [];
+		if("#" == $id){
+			$custom_list = $this->customlist_class->custom_list($this->admin_id);
+			$nodelist = DeviceBasics::getCustomTreeList(array_column($custom_list, 'id'));
+		}elseif(is_numeric(substr($id, 7))){
+			$where_device['custom_id'] = substr($id, 7);
+			$nodelist = DeviceBasics::getDeviceTreeList($where_device);
+		}
+
+		return json($nodelist);
+	}
+
+
 
 }

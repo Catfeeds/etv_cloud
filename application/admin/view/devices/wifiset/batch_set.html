@@ -32,6 +32,7 @@
     </div>
 
     <input type="hidden" name="row[mac_ids]" />
+    <input type="hidden" name="row[custom_id]" />
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">{:__('Choose custom')}:</label>
         <div class="col-xs-12 col-sm-8">
@@ -49,6 +50,3 @@
         </div>
     </div>
 </form>
-<script>
-    var nodeData = {:json_encode($nodeList); };
-</script>

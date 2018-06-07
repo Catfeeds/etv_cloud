@@ -28,7 +28,7 @@
         {else /}<div class="form-group no_repeat_data_div" style="display: none;">{/if}
         <label class="control-label col-xs-12 col-sm-2">{:__('Time')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-no_repeat_date" class="form-control datetimepicker" data-date-format="YYYY-MM-DD hh:mm:ss"
+            <input id="c-no_repeat_date" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss"
                    name="row[no_repeat_date]" type="text" value="{$row['no_repeat_date']} {$row['start_time']}">
         </div>
     </div>
@@ -38,7 +38,7 @@
         {else /}<div class="form-group start_time_div" style="display: none;">{/if}
         <label class="control-label col-xs-12 col-sm-2">{:__('Time')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-start_time" class="form-control datetimepicker" data-date-format="hh:mm:ss"
+            <input id="c-start_time" class="form-control datetimepicker" data-date-format="HH:mm:ss"
                    name="row[start_time]" type="text" value="{$row['start_time']}">
         </div>
     </div>

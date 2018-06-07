@@ -20,9 +20,6 @@ class Popupset extends Backend
      */
     protected $model = null;
 
-    //客户类 可用于查询账号对应客户列表
-    protected $customlist_class = null;
-
     protected $modelValidate = true;
 
     protected $modelSceneValidate = true;
@@ -33,8 +30,6 @@ class Popupset extends Backend
     {
         parent::_initialize();
         $this->model = model('PopupSetting');
-
-	    $this->customlist_class = new Customlist;
 
 	    $this->admin_id = $this->auth->id;
     }
@@ -51,7 +46,8 @@ class Popupset extends Backend
 			$this->relationSearch = true;
 			$this->searchFields = "custom.custom_id";
 
-			$where_customid['zxt_popup_setting.custom_id'] = ['in', $this->customlist_class->custom_id($this->admin_id)];
+			$Customlist = new Customlist();
+			$where_customid['zxt_popup_setting.custom_id'] = ['in', $Customlist->custom_id($this->admin_id)];
 
 			list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 			$total = $this->model
@@ -183,7 +179,10 @@ class Popupset extends Backend
 	 * 基础表单选项
 	 */
 	private function get_option($row = NULL){
-		$customlist = $this->customlist_class->custom_list($this->admin_id);
+		$Customlist = new Customlist();
+		$customlist = $Customlist->custom_list($this->admin_id);
+		if(empty($customlist))
+			$this->error(__('You have no permission'));
 		Cache::set($this->admin_id.'-popup-customlist', array_column($customlist, 'id'), 36000); //设置10小时缓存,用于判断客户ID
 		$custom_lists = [];
 		foreach($customlist as $cv){

@@ -24,5 +24,6 @@ return [
 	'popup_break_set'        => [1=>'Break_set_text1', 2=>'Break_set_text2'],  //弹窗广告退出设置, 禁止  允许
 	'popup_position_set'     => [1=>'Position UL', 2=>'Position UR', 3=>'Position LL', 4=>'Position LR'], //弹窗广告位置
 	'device usage'           => ['official'=>__('Official'), 'test'=>__('Test')],
+	'sleep_image_title'      => ['black'=>'Black', 'blue'=>'Blue']
 
 ];

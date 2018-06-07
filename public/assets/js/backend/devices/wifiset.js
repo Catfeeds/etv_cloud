@@ -163,7 +163,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         "core": {
                             'check_callback': true,
                             "data": {
-                                "url" : "devices/wifiset/get_tree_list",
+                                "url" : "devices/common/get_tree_list",
                                 "data": function(node){
                                     return {"id" : node.id};
                                 }

@@ -9,7 +9,6 @@
                         <a href="javascript:;" class="btn btn-primary btn-refresh" title="{:__('Refresh')}" ><i class="fa fa-refresh"></i> </a>
                         <a href="javascript:;" class="btn btn-success btn-add {:$auth->check('devices/sleepset/add')?'':'hide'}" title="{:__('Add')}" ><i class="fa fa-plus"></i> {:__('Add')}</a>
                         <a href="javascript:;" class="btn btn-success btn-multi-edit {:$auth->check('devices/sleepset/multi_edit')?'':'hide'}"><i class="fa fa-pencil"></i> {:__('Multi edit')}</a>
-                        <a href="javascript:;" class="btn btn-primary btn-multi-add {:$auth->check('devices/sleepset/multi_add')?'':'hide'}"><i class="fa fa-plus"></i> {:__('Multi add')}</a>
                         <div class="dropdown btn-group {:$auth->check('devices/sleepset/multi')?'':'hide'}">
                             <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
                             <ul class="dropdown-menu text-left" role="menu">

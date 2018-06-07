@@ -11,5 +11,11 @@ return [
 	'Preview'           =>  '休眠预览图',
 	'Multi edit'        =>  '批量修改',
 	'Multi add'         =>  '批量新增',
+	'Sleep_image'       =>  '休眠背景图预览',
+	'Mac_tips'          =>  '请选择客户设备',
+	'Batch edit'        =>  '批量修改',
+
+	'Black'             =>  '黑色',
+	'Blue'              =>  '蓝色',
 
 ];

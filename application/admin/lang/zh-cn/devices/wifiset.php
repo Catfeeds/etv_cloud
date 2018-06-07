@@ -21,6 +21,6 @@ return [
 	'None'              =>  '无密码',
 	'Batch set'         =>  '批量设置',
 	'Choose custom'     =>  '选择客户',
-	'Choose device'     =>  '请选取需要设置的设备',
+	'Choose device'     =>  '选取设备',
 
 ];

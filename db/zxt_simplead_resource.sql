@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-29 16:53:07
+Date: 2018-06-08 16:59:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `zxt_simplead_resource`;
 CREATE TABLE `zxt_simplead_resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin_id` int(111) NOT NULL,
+  `admin_id` int(11) NOT NULL,
   `title` varchar(40) NOT NULL COMMENT '标题',
   `filepath` varchar(100) NOT NULL COMMENT '资源',
   `rid` int(11) NOT NULL,

@@ -32,7 +32,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         {field: 'push_type', title: __('Push_type'), operate:false, formatter: Controller.api.formatter.push_type_text},
                         {field: 'push_start_time', title: __('Push_start_time'), operate:false},
                         {field: 'push_end_time', title: __('Push_end_time'), operate:false},
-                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
+                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ],

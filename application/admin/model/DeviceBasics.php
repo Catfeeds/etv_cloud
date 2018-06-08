@@ -54,14 +54,16 @@ class DeviceBasics extends Model
 	/**
 	 * 获取设备列表
 	 */
-	public static function getDeviceTreeList($where){
+	public static function getDeviceTreeList($where, $selected=[]){
 		$list = Db::name('device_basics')->where($where)->field('id,mac,room')->select();
 		$node_list = [];
 		if(!empty($list)){
 			foreach($list as $key=>$value){
+				$state = ['selected'=> (in_array($value['id'], $selected)? true: false)];
 				$node_list[] = [
 					'id' =>  $value['id'],
 					'text'  =>  $value['mac'].'('.$value['room'].') ',
+					'state' =>  $state,
 				];
 			}
 		}

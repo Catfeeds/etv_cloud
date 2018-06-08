@@ -21,8 +21,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
             table.on('post-body.bs.table', function (e, settings, json, xhr) {
                 // 批量设置窗口
                 $('.btn-multi-edit').off("click").on("click", function() {
+                    var id_arr = new Array();
+                    $.each(table.bootstrapTable('getSelections'), function (index, row) {
+                        id_arr.push(row['id']);
+                    });
+                    var ids = id_arr.join(",");
                     var table_options = table.bootstrapTable('getOptions');
-                    var url = table_options.extend.multi_edit_url;
+                    var url = table_options.extend.multi_edit_url + '?ids=' +ids;
                     Fast.api.open(url, __('Batch edit'));
                 });
             });
@@ -46,7 +51,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
-                ]
+                ],
+                search:false,
+                showToggle: false,
+                showExport: false
             });
 
             // 为表格绑定事件
@@ -62,7 +70,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
         },
         multi_edit: function(){
             Controller.api.action_function();
-            Controller.api.tree_controller();
+            Controller.api.bindevent();
         },
         api: {
             bindevent: function () {

@@ -214,11 +214,11 @@ class Sleepset extends Backend
         return $this->view->fetch();
     }
 
-    public function multi_edit(){
+    public function multi_edit($ids=NULL){
+
         if ($this->request->isPost())
         {
             $params = $this->request->post("row/a");
-
             if ($params)
             {
                 //验证
@@ -231,29 +231,13 @@ class Sleepset extends Backend
                 Db::startTrans();
                 try
                 {
-                    // 数据处理
-                    $Common = new Common();
-                    $basics_mac = $Common->maclist_by_custom_mac($params['custom_id'] , $params['mac_ids']);
-                    if(false == $basics_mac)
-                        $this->error(__('Choose device'));
-
-                    $maclist = array_column($basics_mac, 'mac'); //MAC集合
-                    foreach($maclist as $key=>$value){
-                        $insert_data[$key]['mac'] = $value;
-                        $insert_data[$key]['sleep_time_start'] = $params['sleep_time_start'];
-                        $insert_data[$key]['sleep_time_end'] = $params['sleep_time_end'];
-                        $insert_data[$key]['sleep_marked_word'] = $params['sleep_marked_word'];
-                        $insert_data[$key]['sleep_countdown_time'] = $params['sleep_countdown_time'];
-                        $insert_data[$key]['sleep_image'] = $params['sleep_image'];
-                        $insert_data[$key]['status'] = $params['status'];
-                    }
-
-                    // 新增数据
-                    Db::name('device_sleep')->insertAll($insert_data);
+                    // 更新数据
+                    Db::name('device_sleep')->where('id', 'in', $ids)->update($params);
                     // 更新指令
-                    if($params['status'] == 'normal' && !empty($maclist)){
+                    if($params['status'] == 'normal' && !empty($ids)){
+                        $maclist= Db::name('device_sleep')->where('id', 'in', $ids)->field('mac')->select();
                         $data_control['sleep_set'] = $data_control['lately_order'] = 'sleep set';
-                        $where_control['mac'] = ['in', $maclist];
+                        $where_control['mac'] = ['in', array_column($maclist, 'mac')];
                         Db::name('device_basics')->where($where_control)->update($data_control);
                     }
                 }

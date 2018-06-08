@@ -13,6 +13,8 @@ use think\Db;
 
 class Customlist extends Controller
 {
+	protected $noNeedLogin = [];
+	protected $noNeedRight = [];
 
 	public function _initialize()
 	{
@@ -61,7 +63,7 @@ class Customlist extends Controller
 				if(in_array($admin_id, $custom_key)){
 					if($content_set_config[$admin_id] == "*"){  //查询全部
 						$custom_id_list = Db::name('custom')->field('id')->select();
-						return explode(",", $custom_id_list);
+						return array_column($custom_id_list, 'id');
 					}else{
 						return explode(",", $content_set_config[$admin_id]);
 					}

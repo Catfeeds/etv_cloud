@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-29 16:52:56
+Date: 2018-06-08 10:00:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `zxt_simplead_custom`;
 CREATE TABLE `zxt_simplead_custom` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `custom_id` varchar(32) NOT NULL COMMENT '客户编号',
+  `custom_id` int(11) NOT NULL COMMENT '客户编号',
   `rid` int(11) NOT NULL,
   `title` varchar(80) DEFAULT NULL COMMENT '标题',
   `updatetime` int(10) NOT NULL,

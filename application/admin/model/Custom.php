@@ -67,4 +67,8 @@ class Custom extends Model
 		return $this->hasMany('device_basics', 'id', 'id');
 	}
 
+	public function message_notice() {
+		return $this->hasMany('message_notice', 'id', 'id');
+	}
+
 }

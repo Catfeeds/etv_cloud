@@ -1,71 +1,88 @@
 <form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
 
     <div class="form-group">
-        <label for="c-custom_id" class="control-label col-xs-12 col-sm-2">{:__('Custom_id')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Custom_name')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-custom_id" data-rule="required" data-source="custom/index" class="form-control selectpage" name="row[custom_id]" type="text" value="">
+            {:build_select('row[custom_id]', $custom_list, null,
+            ['class'=>'form-control selectpicker custom_id', 'required'=>'true',
+            'data-live-search'=>"true" ])}
         </div>
     </div>
+
     <div class="form-group">
         <label for="c-title" class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-title" data-rule="required" class="form-control" name="row[title]" type="text">
+            <input id="c-title" data-rule="required;length(~40)" class="form-control" name="row[title]" type="text">
         </div>
     </div>
+
     <div class="form-group">
         <label for="c-data_params" class="control-label col-xs-12 col-sm-2">{:__('Data_params')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-data_params" data-rule="required" class="form-control" name="row[data_params]" type="text" value="">
+            <textarea id="c-data_params" class="form-control" data-rule="required;length(~256)" name="row[data_params]"></textarea>
         </div>
     </div>
+
     <div class="form-group">
-        <label for="c-repeat_set" class="control-label col-xs-12 col-sm-2">{:__('Repeat_set')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Repeat_set')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-repeat_set" data-rule="required" class="form-control" name="row[repeat_set]" type="text">
+            {:build_radios('row[repeat_set]', $repeat_set_info)}
         </div>
     </div>
-    <div class="form-group">
-        <label for="c-weekday" class="control-label col-xs-12 col-sm-2">{:__('Weekday')}:</label>
+
+    <div class="form-group weekday_div" style="display: none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Weekday')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-weekday" data-rule="required" class="form-control" name="row[weekday]" type="text">
+            {:build_checkboxs('row[weekday][]', $weekday_info)}
         </div>
     </div>
-    <div class="form-group">
-        <label for="c-no_repeat_date" class="control-label col-xs-12 col-sm-2">{:__('No_repeat_date')}:</label>
+
+    <div class="form-group no_repeat_data_div">
+        <label for="c-no_repeat_date" class="control-label col-xs-12 col-sm-2">{:__('Date')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-no_repeat_date" data-rule="required" class="form-control datetimepicker" data-date-format="YYYY-MM-DD" data-use-current="true" name="row[no_repeat_date]" type="text" value="{:date('Y-m-d')}">
+            <input id="c-no_repeat_date" data-rule="required" class="form-control datetimepicker" name="row[no_repeat_date]"
+                   data-date-format="YYYY-MM-DD" data-use-current="true"  type="text" value="{:date('Y-m-d')}">
         </div>
     </div>
-    <div class="form-group">
+
+    <div class="form-group start_time_div">
         <label for="c-start_time" class="control-label col-xs-12 col-sm-2">{:__('Start_time')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-start_time" data-rule="required" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[start_time]" type="text" value="{:date('Y-m-d H:i:s')}">
+            <input id="c-start_time" data-rule="required" class="form-control datetimepicker" data-date-format="HH:mm:ss"
+                   data-use-current="true" name="row[start_time]" type="text" value="{:date('H:i:s')}">
         </div>
     </div>
+
     <div class="form-group">
         <label for="c-end_time" class="control-label col-xs-12 col-sm-2">{:__('End_time')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-end_time" data-rule="required" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[end_time]" type="text" value="{:date('Y-m-d H:i:s')}">
+            <input id="c-end_time" data-rule="required" class="form-control datetimepicker" data-date-format="HH:mm:ss"
+                   data-use-current="true" name="row[end_time]" type="text" value="{:date('H:i:s')}">
         </div>
     </div>
     <div class="form-group">
-        <label for="c-out_to" class="control-label col-xs-12 col-sm-2">{:__('Out_to')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Out_to')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-out_to" data-rule="required" class="form-control" name="row[out_to]" type="text">
+            {:build_select('row[out_to]', $out_to_info, null, ['class'=>'form-control out_to'])}
         </div>
     </div>
+
     <div class="form-group">
-        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="text" value="normal">
+            {:build_radios('row[status]', ['normal'=>__('Normal'), 'hidden'=>__('Hidden')])}
         </div>
     </div>
+
+    <input type="hidden" name="row[mac_ids]" />
     <div class="form-group">
-        <label for="c-mac_ids" class="control-label col-xs-12 col-sm-2">{:__('Mac_ids')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Choose device')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <textarea id="c-mac_ids" data-rule="required" class="form-control " rows="5" name="row[mac_ids]" cols="50"></textarea>
+            <span class="text-muted"><input type="checkbox" name="" id="checkall" /> <label for="checkall"><small>{:__('Check all')}</small></label></span>
+            <div id="treeview"></div>
         </div>
     </div>
+
     <div class="form-group layer-footer">
         <label class="control-label col-xs-12 col-sm-2"></label>
         <div class="col-xs-12 col-sm-8">

@@ -71,4 +71,8 @@ class Custom extends Model
 		return $this->hasMany('message_notice', 'id', 'id');
 	}
 
+	public function timing_app_setting(){
+		return $this->hasMany('timing_app_setting', 'id', 'id');
+	}
+
 }

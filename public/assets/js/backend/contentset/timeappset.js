@@ -29,12 +29,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         {field: 'custom.custom_name', title: __('Custom_name')},
                         {field: 'title', title: __('Title'), operate:false},
                         {field: 'data_params', title: __('Data_params'), operate:false},
-                        {field: 'repeat_set', title: __('Repeat_set'), operate:false},
-                        {field: 'weekday', title: __('Weekday'), operate:false},
-                        {field: 'no_repeat_date', title: __('No_repeat_date'), operate:false},
+                        {field: 'repeat_set', title: __('Repeat_set'), formatter:Controller.api.formatter.week_text, operate:false},
+                        {field: 'no_repeat_date', title: __('No_repeat_date'), operate:false, formatter:Controller.api.formatter.no_repeat_date},
                         {field: 'start_time', title: __('Start_time'), operate:false},
                         {field: 'end_time', title: __('End_time'), operate:false},
-                        {field: 'out_to', title: __('Out_to'), operate:false},
+                        {field: 'out_to', title: __('Out_to'), operate:false, formatter:Controller.api.formatter.out_to_text},
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
@@ -53,7 +52,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
             Controller.api.rendertree_add();
         },
         edit: function () {
-            Controller.api.bindevent();
+            Controller.api.tree_controller();
+            Controller.api.action_function();
+            Controller.api.rendertree_edit(nodeData);
         },
         api: {
             bindevent: function () {
@@ -121,6 +122,53 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                             }
                         }
                     });
+            },
+            rendertree_edit: function (content) {
+                custom_id = $(".custom_id option:selected").val();
+                $("#treeview")
+                    .on('redraw.jstree', function (e) {
+                        $(".layer-footer").attr("domrefresh", Math.random());
+                    })
+                    .jstree({
+                        "themes": {"stripes": true},
+                        "checkbox": {
+                            "keep_selected_style": false,
+                            'three_state' : false,
+                            'cascade' : 'down'
+                        },
+                        "plugins": ["checkbox", "types"],
+                        "core": {
+                            'check_callback': true,
+                            "data": content
+                        }
+                    });
+            },
+            formatter:{
+                week_text: function (value, row, index) {
+                    if(value == 'm-f'){
+                        return __('Mon through Fri');
+                    }else if(value == 'everyday'){
+                        return __('Everyday');
+                    }else if(value == 'user-defined'){
+                        var weekday = row['weekday'];
+                        reg = new RegExp(",", "g");
+                        return '周'+weekday.replace(reg, ',周');
+                    }else if(value == 'no-repeat'){
+                        return __('No-repeat');
+                    }else{
+                        return '-';
+                    }
+                },
+                no_repeat_date: function (value, row, index) {
+                    if('no-repeat' != row['repeat_set']){
+                        return '-';
+                    }else{
+                        return value;
+                    }
+                },
+                out_to_text: function (value) {
+                    return __(value);
+                }
             }
         }
     };

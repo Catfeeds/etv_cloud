@@ -21,7 +21,7 @@ class TimingAppSetting extends Validate
 	    'no_repeat_date'=>  'dateFormat:Y-m-d',
 	    'out_to'        =>  'require|out_to_options_judgment',
 	    'status'        =>  'in:hidden,normal',
-	    'mac_ids'       =>  'mac_ids_options_judgment',
+	    'mac_ids'       =>  'mac_ids_options_judgment'
     ];
     /**
      * 提示消息
@@ -32,8 +32,8 @@ class TimingAppSetting extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add'  => [],
-        'edit' => [],
+        'add'  => ['custom_id', 'title', 'data_params', 'repeat_set', 'weekday', 'start_time', 'end_time', 'no_repeat_date', 'out_to', 'status', 'mac_ids'],
+        'edit' => ['title', 'data_params', 'repeat_set', 'weekday', 'start_time', 'end_time', 'no_repeat_date', 'out_to', 'status', 'mac_ids'],
     ];
 
     // 重复设置选项判断
@@ -69,13 +69,13 @@ class TimingAppSetting extends Validate
     }
 
     // Mac设置选项判断
-    public function mac_ids_options_judgment($value){
-    	if(empty($value))
+    public function mac_ids_options_judgment($value, $rule, $data){
+    	if(trim($value) == "")
     		return __('Mac ids set option error');
 
-    	$mac_list = explode(",", $value);
-    	foreach ($mac_list as $key=>$value){
-    		if(!is_numeric($value)){
+    	$mac_list = explode(",", $data['mac_ids']);
+    	foreach ($mac_list as $v){
+    		if(!is_numeric($v)){
     			return __('Mac选择设置错误');
 		    }
 	    }

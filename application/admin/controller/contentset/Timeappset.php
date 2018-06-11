@@ -2,6 +2,7 @@
 
 namespace app\admin\controller\contentset;
 
+use app\admin\model\DeviceBasics;
 use app\common\controller\Backend;
 use app\admin\controller\contentset\Customlist;
 use think\Cache;
@@ -85,6 +86,9 @@ class Timeappset extends Backend
 					//是否采用模型验证
 					if ($this->modelValidate)
 					{
+						if(!$params['mac_ids']){
+							$this->error(__('Mac ids set option error'));
+						}
 						$name = basename(str_replace('\\', '/', get_class($this->model)));
 						$validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.add' : true) : $this->modelValidate;
 						$this->model->validate($validate);
@@ -122,6 +126,64 @@ class Timeappset extends Backend
 		$this->get_option();
 
 		$this->view->assign('custom_list', $custom_list);
+		return $this->view->fetch();
+	}
+
+	/**
+	 * 修改
+	 */
+	public function edit($ids = NULL)
+	{
+		$row = $this->model->get($ids);
+		if (!$row)
+			$this->error(__('No Results were found'));
+
+		if ($this->request->isPost())
+		{
+			$params = $this->request->post("row/a");
+			if ($params)
+			{
+				try
+				{
+					//是否采用模型验证
+					if ($this->modelValidate)
+					{
+						if(!$params['mac_ids']){
+							$this->error(__('Mac ids set option error'));
+						}
+						$name = basename(str_replace('\\', '/', get_class($this->model)));
+						$validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.edit' : true) : $this->modelValidate;
+						$row->validate($validate);
+					}
+					//数据处理
+					$params = $this->params_handle($params);
+					$result = $row->allowField(true)->save($params);
+					if ($result !== false)
+					{
+						$this->success();
+					}
+					else
+					{
+						$this->error($row->getError());
+					}
+				}
+				catch (\think\exception\PDOException $e)
+				{
+					$this->error($e->getMessage());
+				}
+			}
+			$this->error(__('Parameter %s can not be empty', ''));
+		}
+
+		//获取设备列表
+		$where['custom_id'] = $row['custom_id'];
+		$selected = explode(",", $row['mac_ids']);
+		$nodeList = DeviceBasics::getDeviceTreeList($where, $selected);
+
+		// 获取选项列表
+		$this->get_option();
+		$this->view->assign("row", $row);
+		$this->view->assign("nodeList", $nodeList);
 		return $this->view->fetch();
 	}
 

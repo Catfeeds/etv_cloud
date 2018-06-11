@@ -1,0 +1,48 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label for="c-title" class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-title" data-rule="required" class="form-control" name="row[title]" type="text">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-apk_filepath" class="control-label col-xs-12 col-sm-2">{:__('Apk_filepath')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-apk_filepath" data-rule="required" class="form-control" name="row[apk_filepath]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-apk_filepath" class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button id="plupload-apk_filepath" class="btn btn-primary plupload" data-input-id="c-apk_filepath" data-upload-success="true" data-url="{:url('ajax/myupload')}/?filepath={$savekey}"><i class="fa fa-upload"></i> {:__("Upload")}</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-web_sign" class="control-label col-xs-12 col-sm-2">{:__('Web_sign')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-web_sign" data-rule="required" class="form-control" name="row[web_sign]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-image_filepath" class="control-label col-xs-12 col-sm-2">{:__('Image_filepath')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-image_filepath" data-rule="required" class="form-control" name="row[image_filepath]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="text">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

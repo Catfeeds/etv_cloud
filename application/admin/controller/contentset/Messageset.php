@@ -6,7 +6,6 @@ use app\admin\model\DeviceBasics;
 use app\common\controller\Backend;
 use app\admin\controller\contentset\Customlist;
 use think\Cache;
-use think\Db;
 
 
 /**

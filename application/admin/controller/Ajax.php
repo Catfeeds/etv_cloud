@@ -127,7 +127,7 @@ class Ajax extends Backend
     }
 
     /**
-     * 上传文件 自定义的上传文件方法
+     * 上传文件 自定义的上传文件方法,上传资源
      */
     public function myupload()
     {

@@ -3,39 +3,62 @@
     <div class="form-group">
         <label for="c-title" class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-title" data-rule="required" class="form-control" name="row[title]" type="text" value="{$row.title}">
+            <input id="c-title" data-rule="required;length(~40)" class="form-control" name="row[title]" type="text" value="{$row.title}">
         </div>
     </div>
+
     <div class="form-group">
         <label for="c-apk_filepath" class="control-label col-xs-12 col-sm-2">{:__('Apk_filepath')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-apk_filepath" data-rule="required" class="form-control" name="row[apk_filepath]" type="text" value="{$row.apk_filepath}">
+            <div class="input-group">
+                <input id="c-apk_filepath" data-rule="length(~100)" class="form-control" name="row[apk_filepath]" type="text" value="{$row.apk_filepath}">
+                <input type="hidden" data-url="required" name="row[sha1]" id="c-sha1" value="{$row.sha1}" />
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button id="plupload-apk_filepath" class="btn btn-primary plupload" data-input-id="c-apk_filepath"
+                                data-upload-success="true" data-url="{:url('upload_apk')}" data-mimetype="apk">
+                                <i class="fa fa-upload"></i> {:__("Upload")}
+                        </button>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="c-md5_apk" class="control-label col-xs-12 col-sm-2">{:__('Md5_apk')}:</label>
-        <div class="col-xs-12 col-sm-8">
-            <input id="c-md5_apk" data-rule="required" class="form-control" name="row[md5_apk]" type="text" value="{$row.md5_apk}">
-        </div>
-    </div>
+
     <div class="form-group">
         <label for="c-web_sign" class="control-label col-xs-12 col-sm-2">{:__('Web_sign')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-web_sign" data-rule="required" class="form-control" name="row[web_sign]" type="text" value="{$row.web_sign}">
         </div>
     </div>
+
     <div class="form-group">
         <label for="c-image_filepath" class="control-label col-xs-12 col-sm-2">{:__('Image_filepath')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-image_filepath" data-rule="required" class="form-control" name="row[image_filepath]" type="text" value="{$row.image_filepath}">
+            <div class="input-group">
+                <input id="c-image_filepath" data-rule="required" class="form-control" name="row[image_filepath]" type="text" value="{$row.image_filepath}">
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button id="plupload-image_filepath" class="btn btn-primary plupload" data-input-id="c-image_filepath"
+                                data-upload-success="true" data-url="{:url('upload_image')}" data-mimetype="jpg,png,jpeg"
+                                data-preview-id="p-image_filepath">
+                            <i class="fa fa-upload"></i> {:__("Upload")}
+                        </button>
+                    </span>
+                </div>
+                <span class="msg-box n-right" for="c-image_filepath"></span>
+            </div>
+            <ul class="row list-inline plupload-preview" id="p-image_filepath"></ul>
         </div>
     </div>
+
     <div class="form-group">
-        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="text" value="{$row.status}">
+            {:build_radios('row[status]', ['normal'=>__('Normal'), 'hidden'=>__('Hidden')], $row.status)}
         </div>
     </div>
+
     <div class="form-group layer-footer">
         <label class="control-label col-xs-12 col-sm-2"></label>
         <div class="col-xs-12 col-sm-8">

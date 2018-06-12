@@ -4,6 +4,7 @@
 /application/admin/command/Install/*.lock
 /public/assets/addons/*
 /public/uploads/*
+/public/uploads/skin_upload/*
 .idea
 composer.lock
 *.log

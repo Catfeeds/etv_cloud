@@ -192,4 +192,9 @@ return [
 	'Chinese'                                               => '中文',
 	'English'                                               => '英文',
 	'Allot'                                                 => '分配',
+	'Unaudited'                                             => '未审核',
+	'Egis'                                                  => '审核通过',
+	'No egis'                                               => '审核不通过',
+	'Push'                                                  => '发布通过',
+	'No push'                                               => '发布不通过',
 ];

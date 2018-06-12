@@ -1,0 +1,97 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[type]', $app_type_info, $row.type, ['class'=>'form-control', 'required'=>''])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-name" class="control-label col-xs-12 col-sm-2">{:__('Name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required;length(~40)" class="form-control" name="row[name]" type="text" value="{$row.name}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-version" class="control-label col-xs-12 col-sm-2">{:__('Version')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-version" data-rule="required;length(~20)" class="form-control" name="row[version]" type="text" value="{$row.version}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-remarks" class="control-label col-xs-12 col-sm-2">{:__('Remarks')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-remarks" class="form-control" name="row[remarks]">{$row.remarks}</textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-package" class="control-label col-xs-12 col-sm-2">{:__('Package')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-package" data-rule="length(~100)" class="form-control" name="row[package]" type="text" value="{$row.package}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-filepath" class="control-label col-xs-12 col-sm-2">{:__('Filepath')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-filepath" data-rule="length(~100)" class="form-control" name="row[filepath]" type="text" readonly="readonly" value="{$row.filepath}">
+                <input type="hidden" data-url="required" name="row[sha1]" id="c-sha1" value="{$row.sha1}" />
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button id="plupload-filepath" class="btn btn-primary plupload" data-input-id="c-filepath"
+                                data-upload-success="true" data-url="{:url('upload_apk')}" data-mimetype="apk">
+                                <i class="fa fa-upload"></i> {:__("Upload")}
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-icon" class="control-label col-xs-12 col-sm-2">{:__('Icon')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-icon" data-rule="length(~100)" class="form-control" name="row[icon]" type="text" readonly="readonly" value="{$row.icon}">
+                <div class="input-group-addon no-border no-padding">
+                    <span>
+                        <button id="plupload-icon" class="btn btn-primary plupload" data-input-id="c-icon"
+                                data-upload-success="true" data-url="{:url('upload_icon')}" data-mimetype="jpg,png,jpeg"
+                                data-preview-id="p-icon">
+                            <i class="fa fa-upload"></i> {:__("Upload")}
+                        </button>
+                    </span>
+                </div>
+                <span class="msg-box n-right" for="c-icon"></span>
+            </div>
+            <ul class="row list-inline plupload-preview" id="p-icon"></ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Push all')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[push_all]', ['true'=>__('True'), 'false'=>__('False')], $row.push_all)}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-status" class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_radios('row[status]', ['normal'=>__('Normal'), 'hidden'=>__('Hidden')], $row.status)}
+        </div>
+    </div>
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

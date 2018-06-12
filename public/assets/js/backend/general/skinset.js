@@ -25,14 +25,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id'), operate:false},
-                        {field: 'title', title: __('Title'), operate:false},
+                        {field: 'title', title: __('Title'), operate: 'LIKE'},
                         {field: 'apk_filepath', title: __('Apk_filepath'), operate:false, formatter: Controller.api.formatter.apk_url},
                         {field: 'web_sign', title: __('Web_sign'), operate:false},
                         {field: 'image_filepath', title: __('Image_filepath'), operate:false, formatter: Controller.api.formatter.thumb},
-                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
+                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
-                ]
+                ],
+                search:false,
+                showToggle: false,
+                showExport: false
             });
 
             // 为表格绑定事件

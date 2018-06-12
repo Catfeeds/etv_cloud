@@ -28,5 +28,6 @@ return [
 	'message_push_type'      => ['immediate'=>'Immediate', 'user defined'=>'User Defined'], //消息通知 推送类别 [立即通知,自定义]
 	'device usage'           => ['official'=>__('Official'), 'test'=>__('Test')],  //设备用途 [正式设备,测试设备]
 	'sleep_image_title'      => ['black'=>'Black', 'blue'=>'Blue'],                //休眠背景图名称
-
+	'app_type_info'          => ['system'=>'System', 'common'=>'Common'],
+	'audit_status'           => ['unaudited'=>'Unaudited', 'egis'=>'Egis', 'no egis'=>'No egis']
 ];

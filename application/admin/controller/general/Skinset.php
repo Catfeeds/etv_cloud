@@ -106,7 +106,8 @@ class Skinset extends Backend
 			$this->error(__('No file upload or server upload limit exceeded'));
 		}
 
-		$info = $file->validate(['ext'=>'jpg,png,jpeg'])->move(ROOT_PATH. '/public/uploads/skin_upload');
+		$image_type = Config::get('picture_type'); //图片类型
+		$info = $file->validate(['ext'=>$image_type])->move(ROOT_PATH. '/public/uploads/skin_upload');
 		if($info){
 			$this->success(__('Upload successful'), null, [
 				'url'   => '/uploads/skin_upload/' . $info->getSaveName()

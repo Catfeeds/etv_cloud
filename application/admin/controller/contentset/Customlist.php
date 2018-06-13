@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/5/15
- * Time: 16:56
+ * 账号绑定的客户信息控制器
  */
 
 namespace app\admin\controller\contentset;

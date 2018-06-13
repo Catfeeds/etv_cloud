@@ -6,6 +6,7 @@ use app\common\controller\Backend;
 use think\Config;
 use think\Db;
 use think\exception\PDOException;
+use app\admin\model\DeviceBasics;
 
 /**
  * 
@@ -24,7 +25,7 @@ class Appstore extends Backend
 
 	protected $modelSceneValidate = true;
 
-	protected $noNeedRight = ['upload_apk', 'upload_icon'];
+	protected $noNeedRight = ['upload_apk', 'upload_icon', 'get_tree_list'];
 
     public function _initialize()
     {
@@ -171,10 +172,28 @@ class Appstore extends Backend
 		return $this->view->fetch();
 	}
 
+	/**
+	 * 删除
+	 */
 	public function del($ids = "")
 	{
 		if($ids){
+			// 删除事件
+			Hook::add('upload_delete', function($params) {
+				$apk = ROOT_PATH . '/public/appstore_upload/' . $params['filepath'];
+				$icon = ROOT_PATH . '/public/appstore_upload/' . $params['icon'];
+				if (is_file($apk))
+				{
+					@unlink($apk);
+				}
+				if (is_file($icon))
+				{
+					@unlink($icon);
+				}
+			});
+
 			$where_apk['id'] = $where_devices['app_id'] = ['in', $ids];
+			$appstore_info = Db::name('appstore')->where($where_apk)->select();
 			Db::startTrans();
 			try{
 				Db::name('appstore')->where($where_apk)->delete();
@@ -184,9 +203,95 @@ class Appstore extends Backend
 				$this->error(__('No rows were deleted'));
 			}
 			Db::commit();
+			//监听删除
+			foreach($appstore_info as $attachment){
+				\think\Hook::listen("upload_delete", $attachment);
+			}
 			$this->success();
 		}
 		$this->error(__('Parameter %s can not be empty', 'ids'));
+	}
+
+	/**
+	 * 分配至设备
+	 */
+	public function allot($ids = "") {
+
+		if ($this->request->isPost())
+		{
+			$params = $this->request->post("row/a");
+
+			if ($params)
+			{
+				//判断数据
+				if(empty($params['custom_id']) && empty($params['mac_ids'])){
+					$this->error(__('Parameter error'));
+				}
+				//整理客户列表ID
+				if(!empty($params['custom_id'])){
+					$params['custom_id'] = str_replace("custom_", "",$params['custom_id']);
+				}
+				//整理MAC列表及获取MAC对应的客户列表ID
+				$device_list = [];
+				if(!empty($params['mac_ids'])){
+					$basics_list = Db::name('device_basics')->where('id', 'in', $params['mac_ids'])->field('id,custom_id')->select();
+					foreach ($basics_list as $key=>$value){
+						$device_list[$value['custom_id']][] = $value['id'];
+					}
+				}
+				//更新数据
+				$add_data = [];
+				if(!empty($params['custom_id'])){
+					$params_custom_id = explode(",", $params['custom_id']);
+					foreach ($params_custom_id as $key=>$value){
+						$add_data[$key]['app_id'] = $ids;
+						$add_data[$key]['custom_id'] = $value;
+						$add_data[$key]['mac_ids'] = 'all_mac';
+					}
+				}
+				if(!empty($device_list)){
+					$count = count($add_data);
+					foreach ($device_list as $k=>$v){
+						$add_data[$count+1]['app_id'] = $ids;
+						$add_data[$count+1]['custom_id'] = $k;
+						$add_data[$count+1]['mac_ids'] = implode(",", $v);
+						$count++;
+					}
+				}
+				//获取历史绑定数据
+				$pass_data = Db::name('appstore_devices')->where('app_id','eq',$ids)->field('custom_id')->select();
+
+				//需要删除数据
+				$del_where = NULL;
+				if(!empty($pass_data)){
+					$del_data = array_diff(array_column($pass_data, 'custom_id'), array_column($add_data, 'custom_id'));
+					if(!empty($del_data)){
+						$del_where['custom_id'] = ['in', $del_data];
+					}
+				}
+
+				Db::startTrans();
+				try
+				{
+					Db::name('appstore_devices')->insertAll($add_data,$replace=true);
+					if($del_where){
+						Db::name('appstore_devices')->where($del_where)->delete();
+					}
+				}
+				catch (\think\exception\PDOException $e)
+				{
+					Db::rollback();
+					$this->error(__('Operation failed'));
+				}
+				Db::commit();
+				$this->success();
+			}
+			$this->error(__('Parameter %s can not be empty', ''));
+		}
+
+		$this->assignconfig('row_id', $ids);
+		$this->view->assign('tips', __('Choose devices tips'));
+		return $this->view->fetch();
 	}
 
 	/**
@@ -236,4 +341,67 @@ class Appstore extends Backend
 		}
 	}
 
+	/**
+	 * jstree调用方法
+	 */
+	public function get_tree_list($id = null, $row_id){
+		if(empty($id)){
+			$this->error(__('Unknown data format'));
+		}
+		$nodelist = [];
+
+		if("#" == $id){
+			$nodelist = self::getCustomTreeList($row_id);
+		}elseif(is_numeric(substr($id, 7))){
+			$where_appstore = []; //查询已选客户或设备的条件
+			$where_device = [];   //查询设备基础表的条件
+			$where_appstore['app_id'] = $row_id;
+			$where_device['custom_id'] = $where_appstore['custom_id'] = substr($id, 7);
+			$appstore_list = Db::name('appstore_devices')->where($where_appstore)->field('mac_ids')->find();
+			$select = []; //已选MAC列表
+			if(!empty($appstore_list) && 'all_mac'!=$appstore_list['mac_ids']){
+				$select = explode(",", $appstore_list['mac_ids']);
+			}
+			$nodelist = DeviceBasics::getDeviceTreeList($where_device, $select);
+		}
+		return json($nodelist);
+	}
+
+	/**
+	 * Jstree二次调用获取子节点方法
+	 * @param $row_id APP操作列表ID
+	 */
+	private static function getCustomTreeList($row_id){
+		$custom_list = collection(Db::name('custom')->field('id,custom_name')->select())->toArray();
+		$appstore_devices_list = Db::name('appstore_devices')->where('app_id','eq', $row_id)->field('custom_id,mac_ids')->select();
+		if(!empty($appstore_devices_list)){
+			foreach ($appstore_devices_list as $key=>$value){
+				if('all_mac' == $value['mac_ids']){
+					$all_mac_custom_id[] = $value['custom_id'];  //mac为'all_mac'的客户ID
+				}else{
+					$open_custom_id[] = $value['custom_id'];     //mac为普通列表的客户ID
+				}
+			}
+		}else{
+			$all_mac_custom_id = [];
+			$open_custom_id = [];
+		}
+
+		if (!empty($custom_list)){
+			foreach ($custom_list as $key=>$value){
+				$custom_list[$key]['id'] = 'custom_'. $value['id'];
+				$custom_list[$key]['text'] = $value['custom_name'];
+				$custom_list[$key]['children'] = true;
+				if(in_array($value['id'], $all_mac_custom_id)){
+					$state['selected'] = true;
+				}
+				if (in_array($value['id'], $open_custom_id)){
+					$state['undetermined'] = true;
+				}
+				$custom_list[$key]['state'] = $state;
+				$state = [];
+			}
+		}
+		return $custom_list;
+	}
 }

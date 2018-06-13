@@ -1,23 +1,23 @@
 <?php
 
-namespace app\admin\controller\devices;
+namespace app\admin\controller\general;
 
 use app\common\controller\Backend;
 use think\Config;
-use think\Db;
 use think\exception\PDOException;
+use think\Db;
 use app\admin\model\DeviceBasics;
 
 /**
- * 
+ * 系统管理
  *
  * @icon fa fa-circle-o
  */
-class Appstore extends Backend
+class Systemset extends Backend
 {
     
     /**
-     * Appstore模型对象
+     * UpgradeSystem模型对象
      */
     protected $model = null;
 
@@ -25,21 +25,26 @@ class Appstore extends Backend
 
 	protected $modelSceneValidate = true;
 
-	protected $noNeedRight = ['upload_apk', 'upload_icon', 'get_tree_list'];
+	protected $noNeedRight = ['upload', 'get_tree_list'];
 
     public function _initialize()
     {
         parent::_initialize();
-        $this->model = model('Appstore');
+        $this->model = model('UpgradeSystem');
 
     }
-    
+
     public function index()
     {
 	    //设置过滤方法
 	    $this->request->filter(['strip_tags']);
 	    if ($this->request->isAjax())
 	    {
+		    //如果发送的来源是Selectpage，则转发到Selectpage
+		    if ($this->request->request('keyField'))
+		    {
+			    return $this->selectpage();
+		    }
 		    list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 		    $total = $this->model
 			    ->where($where)
@@ -55,10 +60,10 @@ class Appstore extends Backend
 		    $cdnurl = preg_replace("/\/(\w+)\.php$/i", '', $this->request->root());
 		    foreach ($list as $k => &$v)
 		    {
-		    	if($v['icon']){
-		    		$v['icon_url'] = $cdnurl.$v['icon'];
+			    if($v['filepath']){
+				    $v['filepath_url'] = $cdnurl.$v['filepath'];
 			    }else{
-				    $v['icon_url'] = '';
+				    $v['filepath_url'] = '';
 
 			    }
 			    $v['filepath_url'] = $cdnurl.$v['filepath'];
@@ -77,48 +82,42 @@ class Appstore extends Backend
 	 * 添加
 	 */
 	public function add()
-	{
-		if ($this->request->isPost())
-		{
-			$params = $this->request->post("row/a");
-			if ($params)
-			{
-				try
-				{
-					//是否采用模型验证
-					if ($this->modelValidate)
-					{
-						$name = basename(str_replace('\\', '/', get_class($this->model)));
-						$validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.add' : true) : $this->modelValidate;
-						$this->model->validate($validate);
-					}
-					$result = $this->model->allowField(true)->save($params);
-					if ($result !== false)
-					{
-						$this->success();
-					}
-					else
-					{
-						$this->error($this->model->getError());
-					}
-				}
-				catch (\think\exception\PDOException $e)
-				{
-					$this->error($e->getMessage());
-				}
-			}
-			$this->error(__('Parameter %s can not be empty', ''));
-		}
-
-		//app类型
-		$app_type_info = Config::get('app_type_info');
-		foreach ($app_type_info as &$value){
-			$value = __($value);
-		}
-		$this->view->assign('app_type_info', $app_type_info);
-
-		return $this->view->fetch();
-	}
+    {
+	    if ($this->request->isPost())
+	    {
+		    $params = $this->request->post("row/a");
+		    if ($params)
+		    {
+			    try
+			    {
+				    //是否采用模型验证
+				    if ($this->modelValidate)
+				    {
+					    $name = basename(str_replace('\\', '/', get_class($this->model)));
+					    $validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.add' : true) : $this->modelValidate;
+					    $this->model->validate($validate);
+				    }
+				    $params['createtime'] = time();
+				    $params['updatetime'] = time();
+				    $result = $this->model->allowField(true)->save($params);
+				    if ($result !== false)
+				    {
+					    $this->success();
+				    }
+				    else
+				    {
+					    $this->error($this->model->getError());
+				    }
+			    }
+			    catch (PDOException $e)
+			    {
+				    $this->error($e->getMessage());
+			    }
+		    }
+		    $this->error(__('Parameter %s can not be empty', ''));
+	    }
+	    return $this->view->fetch();
+    }
 
 	/**
 	 * 编辑
@@ -143,7 +142,6 @@ class Appstore extends Backend
 						$validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.edit' : true) : $this->modelValidate;
 						$row->validate($validate);
 					}
-					$params['audit_status'] = 'unaudited';
 					$result = $row->allowField(true)->save($params);
 					if ($result !== false)
 					{
@@ -161,13 +159,6 @@ class Appstore extends Backend
 			}
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
-
-		//app类型
-		$app_type_info = Config::get('app_type_info');
-		foreach ($app_type_info as &$value){
-			$value = __($value);
-		}
-		$this->view->assign('app_type_info', $app_type_info);
 		$this->view->assign("row", $row);
 		return $this->view->fetch();
 	}
@@ -178,34 +169,26 @@ class Appstore extends Backend
 	public function del($ids = "")
 	{
 		if($ids){
-			// 删除事件
-			Hook::add('upload_delete', function($params) {
-				$apk = ROOT_PATH . '/public/' . $params['filepath'];
-				$icon = ROOT_PATH . '/public/' . $params['icon'];
-				if (is_file($apk))
-				{
-					@unlink($apk);
-				}
-				if (is_file($icon))
-				{
-					@unlink($icon);
-				}
-			});
 
-			$where_apk['id'] = $where_devices['app_id'] = ['in', $ids];
-			$appstore_info = Db::name('appstore')->where($where_apk)->select();
+			$where_sys['id'] = $where_devices['sys_id'] = ['in', $ids];
+			$system_info = Db::name('upgrade_system')->where($where_sys)->select();
+
 			Db::startTrans();
 			try{
-				Db::name('appstore')->where($where_apk)->delete();
-				Db::name('appstore_devices')->where($where_devices)->delete();
+				Db::name('upgrade_system')->where($where_sys)->delete();
+				Db::name('upgrade_system_devices')->where($where_devices)->delete();
 			}catch (PDOException $e){
 				Db::rollback();
 				$this->error(__('No rows were deleted'));
 			}
 			Db::commit();
-			//监听删除
-			foreach($appstore_info as $attachment){
-				\think\Hook::listen("upload_delete", $attachment);
+			//删除原件
+			foreach($system_info as $attachment){
+				$filepath = ROOT_PATH . '/public/' . $attachment['filepath'];
+				if (is_file($filepath))
+				{
+					@unlink($filepath);
+				}
 			}
 			$this->success();
 		}
@@ -213,9 +196,9 @@ class Appstore extends Backend
 	}
 
 	/**
-	 * 分配至设备
+	 * 分配
 	 */
-	public function allot($ids = "") {
+	public function allot($ids = NULL){
 
 		if ($this->request->isPost())
 		{
@@ -244,7 +227,7 @@ class Appstore extends Backend
 				if(!empty($params['custom_id'])){
 					$params_custom_id = explode(",", $params['custom_id']);
 					foreach ($params_custom_id as $key=>$value){
-						$add_data[$key]['app_id'] = $ids;
+						$add_data[$key]['sys_id'] = $ids;
 						$add_data[$key]['custom_id'] = $value;
 						$add_data[$key]['mac_ids'] = 'all_mac';
 					}
@@ -252,14 +235,14 @@ class Appstore extends Backend
 				if(!empty($device_list)){
 					$count = count($add_data);
 					foreach ($device_list as $k=>$v){
-						$add_data[$count+1]['app_id'] = $ids;
+						$add_data[$count+1]['sys_id'] = $ids;
 						$add_data[$count+1]['custom_id'] = $k;
 						$add_data[$count+1]['mac_ids'] = implode(",", $v);
 						$count++;
 					}
 				}
 				//获取历史绑定数据
-				$pass_data = Db::name('appstore_devices')->where('app_id','eq',$ids)->field('custom_id')->select();
+				$pass_data = Db::name('upgrade_system_devices')->where('sys_id','eq',$ids)->field('custom_id')->select();
 
 				//需要删除数据
 				$del_where = NULL;
@@ -273,12 +256,12 @@ class Appstore extends Backend
 				Db::startTrans();
 				try
 				{
-					Db::name('appstore_devices')->insertAll($add_data,$replace=true);
+					Db::name('upgrade_system_devices')->insertAll($add_data,$replace=true);
 					if($del_where){
-						Db::name('appstore_devices')->where($del_where)->delete();
+						Db::name('upgrade_system_devices')->where($del_where)->delete();
 					}
 				}
-				catch (\think\exception\PDOException $e)
+				catch (PDOException $e)
 				{
 					Db::rollback();
 					$this->error(__('Operation failed'));
@@ -288,57 +271,9 @@ class Appstore extends Backend
 			}
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
-
 		$this->assignconfig('row_id', $ids);
 		$this->view->assign('tips', __('Choose devices tips'));
 		return $this->view->fetch();
-	}
-
-	/**
-	 * 上传apk
-	 */
-	public function upload_apk(){
-
-		Config::set('default_return_type', 'json');
-		$file = $this->request->file('file');
-		if (empty($file)) {
-			$this->error(__('No file upload or server upload limit exceeded'));
-		}
-
-		$info = $file->validate(['ext'=>'apk'])->move(ROOT_PATH. '/public/uploads/appstore_upload');
-		if($info){
-			$this->success(__('Upload successful'), null, [
-				'url'   => '/uploads/appstore_upload/' . $info->getSaveName(),
-				'sha1'  => $info->hash()
-			]);
-		}else{
-			// 上传失败获取错误信息
-			$this->error($file->getError());
-		}
-	}
-
-	/**
-	 * 上传图标
-	 */
-	public function upload_icon(){
-
-		Config::set('default_return_type', 'json');
-		$file = $this->request->file('file');
-		if (empty($file)) {
-			$this->error(__('No file upload or server upload limit exceeded'));
-		}
-
-		$icon_type = Config::get('picture_type'); //图片类型
-		$info = $file->validate(['ext'=>$icon_type])->move(ROOT_PATH. '/public/uploads/appstore_upload');
-		if($info){
-			$this->success(__('Upload successful'), null, [
-				'url'   => '/uploads/appstore_upload/' . $info->getSaveName(),
-				'sha1'  => $info->hash()
-			]);
-		}else{
-			// 上传失败获取错误信息
-			$this->error($file->getError());
-		}
 	}
 
 	/**
@@ -355,9 +290,9 @@ class Appstore extends Backend
 		}elseif(is_numeric(substr($id, 7))){
 			$where_appstore = []; //查询已选客户或设备的条件
 			$where_device = [];   //查询设备基础表的条件
-			$where_appstore['app_id'] = $row_id;
+			$where_appstore['sys_id'] = $row_id;
 			$where_device['custom_id'] = $where_appstore['custom_id'] = substr($id, 7);
-			$appstore_list = Db::name('appstore_devices')->where($where_appstore)->field('mac_ids')->find();
+			$appstore_list = Db::name('upgrade_system_devices')->where($where_appstore)->field('mac_ids')->find();
 			$select = []; //已选MAC列表
 			if(!empty($appstore_list) && 'all_mac'!=$appstore_list['mac_ids']){
 				$select = explode(",", $appstore_list['mac_ids']);
@@ -369,13 +304,12 @@ class Appstore extends Backend
 
 	/**
 	 * Jstree二次调用获取子节点方法
-	 * @param $row_id APP操作列表ID
 	 */
 	private static function getCustomTreeList($row_id){
-		$custom_list = collection(Db::name('custom')->field('id,custom_name')->select())->toArray();
-		$appstore_devices_list = Db::name('appstore_devices')->where('app_id','eq', $row_id)->field('custom_id,mac_ids')->select();
-		if(!empty($appstore_devices_list)){
-			foreach ($appstore_devices_list as $key=>$value){
+		$custom_list = Db::name('custom')->field('id,custom_name')->select();
+		$upgrade_devices_list = Db::name('upgrade_system_devices')->where('sys_id','eq', $row_id)->field('custom_id,mac_ids')->select();
+		if(!empty($upgrade_devices_list)){
+			foreach ($upgrade_devices_list as $key=>$value){
 				if('all_mac' == $value['mac_ids']){
 					$all_mac_custom_id[] = $value['custom_id'];  //mac为'all_mac'的客户ID
 				}else{
@@ -410,4 +344,65 @@ class Appstore extends Backend
 		}
 		return $return_data;
 	}
+
+	/**
+	 * 上传
+	 */
+	public function upload(){
+
+	    Config::set('default_return_type', 'json');
+	    $file = $this->request->file('file');
+	    if (empty($file)) {
+		    $this->error(__('No file upload or server upload limit exceeded'));
+	    }
+
+	    $info = $file->validate(['ext'=>'zip'])->move(ROOT_PATH. '/public/uploads/system_upload');
+	    if($info){
+	    	//获取系统信息
+		    $filepath = ROOT_PATH.'/public/uploads/system_upload/'.$info->getSaveName();
+		    $zip = zip_open($filepath);
+		    if ($zip) {
+			    do {
+				    $entry = zip_read($zip);
+			    }while ($entry && zip_entry_name($entry) != "system/build.prop");
+			    zip_entry_open($zip, $entry, "r");
+			    $entry_content = zip_entry_read($entry, zip_entry_filesize($entry));
+
+			    $version_release_last = strstr($entry_content, "ro.build.version.release=");
+			    $version_release_arr = explode("<br />", nl2br($version_release_last));
+			    $version_arr = explode("=", $version_release_arr['0']);
+			    $version = $version_arr['1'];
+
+			    $utc_open_pos = strpos($entry_content, "ro.build.date.utc=");
+			    $utc_close_pos = strpos($entry_content, "ro.build.type", $utc_open_pos);
+			    $utc = substr($entry_content,$utc_open_pos + strlen("ro.build.date.utc="),$utc_close_pos - ($utc_open_pos + strlen("ro.build.date.utc=")) );
+
+			    zip_entry_close($entry);
+			    zip_close($zip);
+
+
+			    $this->success(__('Upload successful'), null, [
+				    'url'       =>  '/uploads/system_upload/' . $info->getSaveName(),
+				    'sha1'      =>  $info->hash(),
+				    'version'   =>  $version,
+				    'utc'       =>  $utc,
+				    'size'      =>  $info->getSize()
+			    ]);
+		    }else{
+//			    if (is_file($filepath))
+//			    {
+//				    @unlink($filepath);
+//			    }
+				// 上传失败获取错误信息
+			    $this->error(__(''));
+		    }
+
+
+	    }else{
+		    // 上传失败获取错误信息
+		    $this->error($file->getError());
+	    }
+    }
+    
+
 }

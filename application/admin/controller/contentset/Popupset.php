@@ -46,8 +46,8 @@ class Popupset extends Backend
 			$this->relationSearch = true;
 			$this->searchFields = "custom.custom_id";
 
-			$Customlist = new Customlist();
-			$where_customid['zxt_popup_setting.custom_id'] = ['in', $Customlist->custom_id($this->admin_id)];
+			$Customlist_class = new Customlist();
+			$where_customid['zxt_popup_setting.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
 
 			list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 			$total = $this->model
@@ -179,8 +179,8 @@ class Popupset extends Backend
 	 * 基础表单选项
 	 */
 	private function get_option($row = NULL){
-		$Customlist = new Customlist();
-		$customlist = $Customlist->custom_list($this->admin_id);
+		$Customlist_class = new Customlist();
+		$customlist = $Customlist_class->custom_list($this->admin_id);
 		if(empty($customlist))
 			$this->error(__('You have no permission'));
 		Cache::set($this->admin_id.'-popup-customlist', array_column($customlist, 'id'), 36000); //设置10小时缓存,用于判断客户ID

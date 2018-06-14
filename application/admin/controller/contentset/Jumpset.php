@@ -19,9 +19,6 @@ class Jumpset extends Backend
      */
     protected $model = null;
 
-	//客户类 可用于查询账号对应客户列表
-	protected $customlist_class = null;
-
 	protected $modelValidate = true;
 
 	protected $modelSceneValidate = true;
@@ -32,8 +29,6 @@ class Jumpset extends Backend
     {
         parent::_initialize();
         $this->model = model('JumpSetting');
-
-	    $this->customlist_class = new Customlist;
 
 	    $this->admin_id = $this->auth->id;
     }
@@ -49,7 +44,8 @@ class Jumpset extends Backend
 	    $this->request->filter(['strip_tags']);
         if ($this->request->isAjax())
         {
-	        $where_customid['zxt_jump_setting.custom_id'] = ['in', $this->customlist_class->custom_id($this->admin_id)];
+        	$Customlist = new Customlist();
+	        $where_customid['zxt_jump_setting.custom_id'] = ['in', $Customlist->custom_id($this->admin_id)];
 
 	        list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $total = $this->model
@@ -118,7 +114,8 @@ class Jumpset extends Backend
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
 
-		$customlist = $this->customlist_class->custom_list($this->admin_id);
+		$Customlist_Class = new Customlist();
+		$customlist = $Customlist_Class->custom_list($this->admin_id);
 		Cache::set($this->admin_id.'-jump-customlist', array_column($customlist, 'id'), 36000); //设置10小时缓存,用于判断客户ID
 		foreach($customlist as $cv){
 			$custom_lists[$cv['id']] = $cv['custom_name'];//客户列表
@@ -157,7 +154,8 @@ class Jumpset extends Backend
 				try
 				{
 					//修改栏目的权限判断
-					$custom_id_list = $this->customlist_class->custom_id($this->admin_id);
+					$Customlist_class = new Customlist();
+					$custom_id_list = $Customlist_class->custom_id($this->admin_id);
 					if(!in_array($row['custom_id'], $custom_id_list))
 						$this->error(__('You have no permission'));
 

@@ -11,7 +11,7 @@
                         <a href="javascript:;" class="btn btn-info btn-resources btn-disabled disabled {:$auth->check('contentset/colresource/index')?'':'hide'}" title="{:__('Resources')}" ><i class="fa fa-folder-open"></i> {:__('Resources')}</a>
                         <div class="btn-group">
                             <div class="">
-                                {:build_select('row[pid]', $custom_list, null, ['class'=>'form-control custom_select'])}
+                                {:build_select('row[pid]', $custom_list, null, ['class'=>'form-control custom_select selectpicker', 'data-live-search'=>"true"])}
                             </div>
                         </div>
                     </div>

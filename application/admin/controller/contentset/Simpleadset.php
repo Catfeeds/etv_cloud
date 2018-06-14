@@ -31,8 +31,6 @@ class Simpleadset extends Backend
         parent::_initialize();
         $this->model = model('SimpleadCustom');
 
-        $this->customlist_class = new Customlist;
-
         $this->admin_id = $this->auth->id;
 
     }
@@ -46,7 +44,8 @@ class Simpleadset extends Backend
         $this->request->filter(['strip_tags']);
         if ($this->request->isAjax())
         {
-            $where_customid['zxt_simplead_custom.custom_id'] = ['in', $this->customlist_class->custom_id( $this->admin_id)];
+        	$Customlist_class = new Customlist();
+            $where_customid['zxt_simplead_custom.custom_id'] = ['in', $Customlist_class->custom_id( $this->admin_id)];
 
             $this->relationSearch = true;
             $this->searchFields = "custom.custom_id";
@@ -99,7 +98,8 @@ class Simpleadset extends Backend
                 try
                 {
                     //修改栏目判断权限
-                    if(!in_array($row['custom_id'], $this->customlist_class->custom_id( $this->admin_id)))
+	                $Customlist_class = new Customlist();
+                    if(!in_array($row['custom_id'], $Customlist_class->custom_id( $this->admin_id)))
                         $this->error(__('You have no permission'));
 
                     if ($this->modelValidate)

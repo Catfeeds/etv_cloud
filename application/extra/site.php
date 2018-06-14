@@ -22,11 +22,12 @@ return array (
   ),
   'configgroup' => 
   array (
+  	'account_management'    =>  'Account management',
     'basic' => 'Basic',
-    'email' => 'Email',
-    'dictionary' => 'Dictionary',
-    'user' => 'User',
-    'example' => 'Example',
+//    'email' => 'Email',
+//    'dictionary' => 'Dictionary',
+//    'user' => 'User',
+//    'example' => 'Example',
   ),
   'mail_type' => '1',
   'mail_smtp_host' => 'smtp.qq.com',
@@ -35,4 +36,29 @@ return array (
   'mail_smtp_pass' => 'password',
   'mail_verify_type' => '2',
   'mail_from' => '10000@qq.com',
+  'resource_column' => 
+  array (
+    1 => '1,2,3,4,5',
+    2 => '2,3,4',
+  ),
+  'resource_attachment' => 
+  array (
+    2 => '*',
+  ),
+  'resource_allot' => 
+  array (
+    2 => '1,2,3,4,5',
+  ),
+  'content_set' => 
+  array (
+    2 => '*',
+  ),
+  'content_set_column' => 
+  array (
+    2 => '1,2,3,4',
+  ),
+  'device_manage' => 
+  array (
+    2 => '*',
+  ),
 );

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-30 17:57:17
+Date: 2018-06-14 11:57:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,15 +32,15 @@ CREATE TABLE `zxt_config` (
   `extend` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展属性',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='系统配置';
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COMMENT='系统配置';
 
 -- ----------------------------
 -- Records of zxt_config
 -- ----------------------------
-INSERT INTO `zxt_config` VALUES ('1', 'name', 'basic', 'Site name', '请填写站点名称', 'string', 'FastAdmin', '', 'required', '');
+INSERT INTO `zxt_config` VALUES ('1', 'name', 'basic', 'Site name', '请填写站点名称', 'string', '中信通云平台', '', 'required', '');
 INSERT INTO `zxt_config` VALUES ('2', 'beian', 'basic', 'Beian', '粤ICP备15054802号-4', 'string', '', '', '', '');
 INSERT INTO `zxt_config` VALUES ('3', 'cdnurl', 'basic', 'Cdn url', '如果静态资源使用第三方云储存请配置该值', 'string', '', '', '', '');
-INSERT INTO `zxt_config` VALUES ('4', 'version', 'basic', 'Version', '如果静态资源有变动请重新配置该值', 'string', '1.0.1', '', 'required', '');
+INSERT INTO `zxt_config` VALUES ('4', 'version', 'basic', 'Version', '如果静态资源有变动请重新配置该值', 'string', '0.0.1', '', 'required', '');
 INSERT INTO `zxt_config` VALUES ('5', 'timezone', 'basic', 'Timezone', '', 'string', 'Asia/Shanghai', '', 'required', '');
 INSERT INTO `zxt_config` VALUES ('6', 'forbiddenip', 'basic', 'Forbidden ip', '一行一条记录', 'text', '', '', '', '');
 INSERT INTO `zxt_config` VALUES ('7', 'languages', 'basic', 'Languages', '', 'array', '{\"backend\":\"zh-cn\",\"frontend\":\"zh-cn\"}', '', 'required', '');
@@ -54,9 +54,9 @@ INSERT INTO `zxt_config` VALUES ('14', 'mail_smtp_user', 'email', 'Mail smtp use
 INSERT INTO `zxt_config` VALUES ('15', 'mail_smtp_pass', 'email', 'Mail smtp password', '（填写您的密码）', 'string', 'password', '', '', '');
 INSERT INTO `zxt_config` VALUES ('16', 'mail_verify_type', 'email', 'Mail vertify type', '（SMTP验证方式[推荐SSL]）', 'select', '2', '[\"None\",\"TLS\",\"SSL\"]', '', '');
 INSERT INTO `zxt_config` VALUES ('17', 'mail_from', 'email', 'Mail from', '', 'string', '10000@qq.com', '', '', '');
-INSERT INTO `zxt_config` VALUES ('18', 'resource_column', 'account management', 'Column admin manage', '请填写需查看资源对应的账号ID', 'array', '{\"2\":\"2,3,4\"}', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('19', 'resource_attachment', 'account management', 'Attachment admin manage', '请填写需要查看附件对应的账号ID', 'array', '{\"2\":\"2\"}', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('20', 'resource_allot', 'account management', 'Allot admin manage', '请填写可分配资源对应的客户列表ID', 'array', '{\"1\":\"*\",\"3\":\"1,3,4,5\"}\r\n', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('21', 'content_set', 'account management', 'Content setting', '请填写内容设置的客户列表ID', 'array', '{\"1\":\"*\"}', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('22', 'content_set_column', 'account management', 'Content column setting', '请填写栏目设置的客户列表ID', 'array', '{\"2\",\"1,2,3\"}', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('23', 'device_manage', 'account management', 'Devices manage', '请填写登录账号ID和客户ID,查看所有客户使用*替代客户ID', 'array', '{\"2\":\"*\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('18', 'resource_column', 'account_management', 'Column admin manage', '请填写账号ID作为键名,填写需分配的客户ID作为键值,多个客户ID用逗号分隔,尽可能配置少的客户ID,不支持*号查询全部客户', 'array', '{\"1\":\"1,2,3,4,5\",\"2\":\"2,3,4\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('19', 'resource_attachment', 'account_management', 'Attachment admin manage', '请填写账号ID作为键名,填写需查看客户的ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代', 'array', '{\"2\":\"*\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('20', 'resource_allot', 'account_management', 'Allot admin manage', '请填写账号ID作为键名,填写需分配的客户ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代', 'array', '{\"2\":\"1,2,3,4,5\"}\r\n', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('21', 'content_set', 'account_management', 'Content setting', '请填写账号ID作为键名,填写需查看内容设置的客户ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代; PS:不包括内容设置中的栏目模块', 'array', '{\"2\":\"*\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('22', 'content_set_column', 'account_management', 'Content column setting', '请填写账号ID作为键名,填写需查看栏目设置中客户ID作为键值,多个客户ID用逗号分隔,暂不支持*号查看所有客户;', 'array', '{\"2\":\"1,2,3,4\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('23', 'device_manage', 'account_management', 'Devices manage', '请填写账号ID作为键名,填写需查看客户ID作为键值,多个客户ID用逗号分隔,查看所有客户用*号代替;', 'array', '{\"2\":\"*\"}', ' ', '', '');

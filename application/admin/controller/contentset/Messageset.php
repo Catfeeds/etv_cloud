@@ -48,8 +48,8 @@ class Messageset extends Backend
 	        $this->searchFields = "custom.custom_id";
 	        list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
-	        $Customlist = new Customlist();
-	        $where_customid['zxt_message_notice.custom_id'] = ['in', $Customlist->custom_id($this->admin_id)];
+	        $Customlist_class = new Customlist();
+	        $where_customid['zxt_message_notice.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
 
 	        $total = $this->model
                 ->where($where)
@@ -117,8 +117,8 @@ class Messageset extends Backend
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
 
-		$Customlist = new Customlist();
-		$get_custom_list = $Customlist->custom_list($this->admin_id);
+		$Customlist_class = new Customlist();
+		$get_custom_list = $Customlist_class->custom_list($this->admin_id);
 		Cache::set($this->admin_id.'-message-customlist', array_column($get_custom_list, 'id'), 36000); //设置10小时缓存,用于判断客户ID
 		foreach($get_custom_list as $key => $v){
 			$custom_lists[$v['id']] = $v['custom_name'];

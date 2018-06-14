@@ -40,12 +40,21 @@ class Attachment extends Backend
 	    $where_config['name'] = 'resource_attachment';
 		$config_attachment = Db::name('config')->where($where_config)->field('value')->find();
 	    $column_admin = json_decode($config_attachment['value'], true); //json_decode获取特殊账号及其对应查看账号列表值
-	    $admin_key = array_unique(array_keys($column_admin)); //获取特殊账号列表
-	    if(in_array($admin_id, $admin_key)){
-		    $where_other['admin_id'] = array('in', $column_admin[$admin_id]);
+	    if(!empty($column_admin)){
+		    $admin_key = array_unique(array_keys($column_admin)); //获取特殊账号列表
+		    if(in_array($admin_id, $admin_key)){
+				if('*' == $column_admin[$admin_id]){
+					$where_other = [];
+				}else{
+					$where_other['admin_id'] = array('in', $column_admin[$admin_id]);
+				}
+		    }else{
+			    $where_other['admin_id'] = $admin_id;
+		    }
 	    }else{
 		    $where_other['admin_id'] = $admin_id;
 	    }
+
         //设置过滤方法
         $this->request->filter(['strip_tags']);
         if ($this->request->isAjax())

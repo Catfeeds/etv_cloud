@@ -30,6 +30,7 @@ class Config extends Backend
      */
     public function index()
     {
+    	// 需要显示的配置列表
         $siteList = [];
         $groupList = ConfigModel::getGroupList();
         foreach ($groupList as $k => $v)
@@ -38,7 +39,7 @@ class Config extends Backend
             $siteList[$k]['title'] = $v;
             $siteList[$k]['list'] = [];
         }
-
+		// 获取config配置文件中的数据 并复制至siteList
         foreach ($this->model->all() as $k => $v)
         {
             if (!isset($siteList[$v['group']]))
@@ -54,6 +55,7 @@ class Config extends Backend
             $value['content'] = json_decode($value['content'], TRUE);
             $siteList[$v['group']]['list'][] = $value;
         }
+        // 默认第一个显示 active
         $index = 0;
         foreach ($siteList as $k => &$v)
         {
@@ -61,8 +63,8 @@ class Config extends Backend
             $index++;
         }
         $this->view->assign('siteList', $siteList);
-        $this->view->assign('typeList', ConfigModel::getTypeList());
-        $this->view->assign('groupList', ConfigModel::getGroupList());
+        $this->view->assign('typeList', ConfigModel::getTypeList());  //读取配置类型
+        $this->view->assign('groupList', ConfigModel::getGroupList());  //读取分类分组列表
         return $this->view->fetch();
     }
 
@@ -150,7 +152,7 @@ class Config extends Backend
                 $this->model->allowField(true)->saveAll($configList);
                 try
                 {
-                    $this->refreshFile();
+//                    $this->refreshFile();
                     $this->success();
                 }
                 catch (Exception $e)

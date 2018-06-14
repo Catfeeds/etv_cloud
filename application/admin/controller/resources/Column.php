@@ -60,11 +60,15 @@ class Column extends Backend
 	    $admin_id = $this->auth->id;
 	    $where_config['name'] = 'resource_column';
 	    $config_column = Db::name('config')->where($where_config)->field('value')->find();
-	    $column_admin = json_decode($config_column['value'], true); // json_decode获取特殊账号及其对应查看的账号列表值
-	    $admin_key = array_unique(array_keys($column_admin)); //获取特殊账号列表
-	    if(in_array($admin_id, $admin_key)){ //判断是否特殊账号
-		    $where_admin['admin_id'] = array('in', $column_admin[$admin_id]);
-	    }else{ // 普通的栏目主账号
+	    if(!empty($allot_config)){
+		    $column_admin = json_decode($config_column['value'], true); // json_decode获取特殊账号及其对应查看的账号列表值
+		    $admin_key = array_unique(array_keys($column_admin)); //获取特殊账号列表
+		    if(in_array($admin_id, $admin_key)){ //判断是否特殊账号
+			    $where_admin['admin_id'] = array('in', $column_admin[$admin_id]);
+		    }else{ // 普通的栏目主账号
+			    $where_admin['admin_id'] = $admin_id;
+		    }
+	    }else{
 		    $where_admin['admin_id'] = $admin_id;
 	    }
 

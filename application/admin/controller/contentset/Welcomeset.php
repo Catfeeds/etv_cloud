@@ -33,8 +33,6 @@ class Welcomeset extends Backend
         parent::_initialize();
         $this->model = model('WelcomeCustom');
 
-        $this->customlist_class = new Customlist;
-
         $this->admin_id = $this->auth->id;
     }
 
@@ -47,7 +45,8 @@ class Welcomeset extends Backend
         $this->request->filter(['strip_tags']);
         if ($this->request->isAjax())
         {
-            $where_customid['zxt_welcome_custom.custom_id'] = ['in', $this->customlist_class->custom_id( $this->admin_id)];
+        	$CustomList_class = new Customlist();
+            $where_customid['zxt_welcome_custom.custom_id'] = ['in', $CustomList_class->custom_id( $this->admin_id)];
 
             $this->relationSearch = true;
             $this->searchFields = "custom.custom_id";
@@ -100,7 +99,8 @@ class Welcomeset extends Backend
                 try
                 {
                     //修改栏目判断权限
-                    if(!in_array($row['custom_id'], $this->customlist_class->custom_id( $this->admin_id)))
+	                $CustomList_class = new Customlist();
+                    if(!in_array($row['custom_id'], $CustomList_class->custom_id( $this->admin_id)))
                         $this->error(__('You have no permission'));
 
                     if ($this->modelValidate)

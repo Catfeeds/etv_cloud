@@ -46,8 +46,8 @@ class Timeappset extends Backend
 		    $this->relationSearch = true;
 		    $this->searchFields = "custom.custom_id";
 
-		    $Customlist = new Customlist();
-		    $where_customid['zxt_timing_app_setting.custom_id'] = ['in', $Customlist->custom_id($this->admin_id)];
+		    $Customlist_class = new Customlist();
+		    $where_customid['zxt_timing_app_setting.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
 
 		    list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 		    $total = $this->model
@@ -114,8 +114,8 @@ class Timeappset extends Backend
 		}
 
 		// 获取账号绑定的客户列表
-		$Customlist = new Customlist();
-		$get_custom_list = $Customlist->custom_list($this->admin_id);
+		$Customlist_class = new Customlist();
+		$get_custom_list = $Customlist_class->custom_list($this->admin_id);
 		if(empty($get_custom_list))
 			$this->error(__('You have no permission'));
 		Cache::set($this->admin_id.'-message-customlist', array_column($get_custom_list, 'id'), 36000); //设置缓存10小时

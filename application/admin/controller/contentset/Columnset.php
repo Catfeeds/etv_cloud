@@ -23,15 +23,13 @@ class Columnset extends Backend
 
 	protected $modelValidate = true;
 
-	protected $noNeedLogin = ['resource_dragsort']; //无需登录
-	protected $noNeedRight = ['resource_dragsort']; //无需鉴权
+	protected $noNeedLogin = []; //无需登录
+	protected $noNeedRight = []; //无需鉴权
 
     public function _initialize()
     {
         parent::_initialize();
         $this->model = model('ColumnCustom');
-
-	    $this->customlist_class = new Customlist;
     }
 
     /**
@@ -39,7 +37,8 @@ class Columnset extends Backend
      */
     public function index()
     {
-	    $custom_id_list = $this->customlist_class->custom_id_by_column($this->auth->id); //获取账号绑定的客户列表
+    	$Customlist_class = new Customlist();
+	    $custom_id_list = $Customlist_class->custom_id_by_column($this->auth->id); //获取账号绑定的客户列表
 	    $this->request->filter(['strip_tags']);
 	    if ($this->request->isAjax())
 	    {
@@ -201,7 +200,8 @@ class Columnset extends Backend
 			$this->error(__('No Results were found'));
 
 		//判断权限
-		$custom_id_list = $this->customlist_class->custom_id_by_column($this->auth->id);
+		$Customlist_class = new Customlist();
+		$custom_id_list = $Customlist_class->custom_id_by_column($this->auth->id);
 		if(!in_array($column_custom_info['custom_id'], $custom_id_list))
 			$this->error(__('You have no permission'));
 

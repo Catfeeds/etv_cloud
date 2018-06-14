@@ -19,9 +19,6 @@ class Propagandaset extends Backend
      */
     protected $model = null;
 
-    //客户类 可用于查询账号对应客户列表
-    protected $customlist_class = null;
-
     protected $modelValidate = true;
 
     protected $modelSceneValidate = true;
@@ -32,8 +29,6 @@ class Propagandaset extends Backend
     {
         parent::_initialize();
         $this->model = model('PropagandaCustom');
-
-	    $this->customlist_class = new Customlist;
 
 	    $this->admin_id = $this->auth->id;
     }
@@ -49,7 +44,8 @@ class Propagandaset extends Backend
         $this->request->filter(['strip_tags']);
         if ($this->request->isAjax())
         {
-	        $where_customid['zxt_propaganda_custom.custom_id'] = ['in', $this->customlist_class->custom_id($this->admin_id)];
+        	$Customlist_class = new Customlist();
+	        $where_customid['zxt_propaganda_custom.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
 
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $total = $this->model
@@ -101,7 +97,8 @@ class Propagandaset extends Backend
 				try
 				{
 					//修改栏目的权限判断
-					$custom_id_list = $this->customlist_class->custom_id($this->admin_id);
+					$Customlist_class = new Customlist();
+					$custom_id_list = $Customlist_class->custom_id($this->admin_id);
 					if(!in_array($row['custom_id'], $custom_id_list))
 						$this->error(__('You have no permission'));
 					if ($this->modelValidate)

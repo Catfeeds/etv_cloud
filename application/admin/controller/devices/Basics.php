@@ -38,8 +38,6 @@ class Basics extends Backend
         parent::_initialize();
         $this->model = model('DeviceBasics');
 
-	    $this->customlist_class = new Customlist;
-
 	    $this->admin_id = $this->auth->id;
     }
 
@@ -55,7 +53,8 @@ class Basics extends Backend
 	        $this->relationSearch = true;
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
-	        $customid_list = $this->customlist_class->custom_id_device($this->admin_id);
+            $Customlist_class = new Customlist();
+	        $customid_list = $Customlist_class->custom_id_device($this->admin_id);
 	        if(!is_array($customid_list) && $customid_list == config('get all')){
 		        $where_customid = [];
 	        }else{
@@ -127,8 +126,8 @@ class Basics extends Backend
 			}
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
-
-		$customlist = $this->customlist_class->custom_list($this->admin_id);
+		$Customlist_class = new Customlist();
+		$customlist = $Customlist_class->custom_list($this->admin_id);
 		if(empty($customlist))
 			$this->error(__('You have no permission'));
 

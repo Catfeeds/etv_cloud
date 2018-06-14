@@ -19,9 +19,6 @@ class Languageset extends Backend
      */
     protected $model = null;
 
-	//客户类 可用于查询账号对应客户列表
-	protected $customlist_class = null;
-
 	protected $modelValidate = true;
 
 	protected $modelSceneValidate = true;
@@ -32,8 +29,6 @@ class Languageset extends Backend
     {
         parent::_initialize();
         $this->model = model('LanguageSetting');
-
-	    $this->customlist_class = new Customlist;
 
 	    $this->admin_id = $this->auth->id;
     }
@@ -48,7 +43,8 @@ class Languageset extends Backend
 
 		if ($this->request->isAjax())
 		{
-			$where_customid['zxt_language_setting.custom_id'] = ['in', $this->customlist_class->custom_id($this->admin_id)];
+			$Customlist_class = new Customlist();
+			$where_customid['zxt_language_setting.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
 
 			list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 			$total = $this->model
@@ -125,7 +121,8 @@ class Languageset extends Backend
         unset($v);
 	    $this->view->assign('language_types', $language_types); //语言类别
 
-	    $customlist = $this->customlist_class->custom_list($this->admin_id);
+	    $Customlist_class = new Customlist();
+	    $customlist = $Customlist_class->custom_list($this->admin_id);
 	    Cache::set($this->admin_id.'-language-customlist', array_column($customlist, 'id'), 36000); //设置10小时缓存,用于判断客户ID
 	    foreach($customlist as $ckey => $cv){
 			$custom_lists[$cv['id']] = $cv['custom_name'];
@@ -151,7 +148,8 @@ class Languageset extends Backend
                 try
                 {
 	                //修改栏目的权限判断
-	                $custom_id_list = $this->customlist_class->custom_id($this->admin_id);
+	                $Customlist_class = new Customlist();
+	                $custom_id_list = $Customlist_class->custom_id($this->admin_id);
 	                if(!in_array($row['custom_id'], $custom_id_list))
 		                $this->error(__('You have no permission'));
                     //是否采用模型验证

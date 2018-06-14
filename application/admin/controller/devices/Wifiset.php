@@ -48,8 +48,8 @@ class Wifiset extends Backend
 	        $this->relationSearch = true;
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
-	        $Customlist = new Customlist();
-	        $customid_list = $Customlist->custom_id_device($this->admin_id);
+	        $Customlist_class = new Customlist();
+	        $customid_list = $Customlist_class->custom_id_device($this->admin_id);
 	        if(!is_array($customid_list) && $customid_list == config('get all')){
 		        $where_customid = [];
 	        }else{
@@ -132,8 +132,8 @@ class Wifiset extends Backend
 			$this->error(__('Parameter %s can not be empty', ''));
 		}
 
-		$Customlist = new Customlist();
-		$customid_list = $Customlist->custom_id_device($this->admin_id);
+		$Customlist_class = new Customlist();
+		$customid_list = $Customlist_class->custom_id_device($this->admin_id);
 		if($customid_list != config('get all')){
 			if(!in_array($row['custom_id'], $customid_list))
 				$this->error(__('You have no permission'));

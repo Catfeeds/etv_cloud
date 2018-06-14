@@ -30,8 +30,8 @@ class Common extends Backend
 		}
 		$nodelist = [];
 		if("#" == $id){
-			$Customlist = new Customlist();
-			$custom_list = $Customlist->custom_list($this->admin_id);
+			$Customlist_class = new Customlist();
+			$custom_list = $Customlist_class->custom_list($this->admin_id);
 			$nodelist = DeviceBasics::getCustomTreeList(array_column($custom_list, 'id'));
 		}elseif(is_numeric(substr($id, 7))){
 			$where_device['custom_id'] = substr($id, 7);

@@ -55,4 +55,14 @@ return [
     'Send a test message'         => '发送测试邮件',
     'This is a test mail content' => '这是一封测试邮件,用于测试邮件配置是否正常!',
     'This is a test mail'         => '这是一封测试邮件',
+
+	'Explain'                   =>  '解析说明',
+	'Account management'        =>  '特殊账号配置',
+	'Allot admin manage'        =>  '资源分配至客户配置',
+	'Column admin manage'       =>  '资源模块栏目管理配置',
+	'Attachment admin manage'   =>  '查看客户附件配置',
+	'Content setting'           =>  '查看内容设置配置',
+	'Content column setting'    =>  '查看栏目设置的客户配置',
+	'Devices manage'            =>  '设备管理查看客户配置',
+
 ];

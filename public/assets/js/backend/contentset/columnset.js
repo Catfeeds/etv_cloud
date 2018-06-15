@@ -82,7 +82,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
                 //客户选择
                 $(".custom_select").off("change").on("change", function(){
-                    var $custom_id = $(".custom_select").val();
+                    var $custom_id = $(".custom_select option:selected").val();
                     options.queryParams = function (params) {
                         return{
                             filter: JSON.stringify({custom_id: $custom_id}),

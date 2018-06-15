@@ -84,7 +84,7 @@ class Bindcustom extends Backend
 				$params['admin_id'] = $admin_id;
 				try{
 					Db::name('admin_custom_bind')->insert($params, true);
-				}catch (PDOException $e){
+				}catch (\PDOException $e){
 					$this->error(__('Operation failed'));
 				}
 				$this->success();

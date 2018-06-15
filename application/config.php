@@ -192,7 +192,7 @@ return [
         // SESSION_ID的提交变量,解决flash上传跨域
         'var_session_id' => '',
         // SESSION 前缀
-        'prefix'         => 'etv_cloud018',
+        'prefix'         => 'etv_cloud',
         // 驱动方式 支持redis memcache memcached
         'type'           => '',
         // 是否自动开启 SESSION
@@ -260,7 +260,7 @@ return [
         //是否开启前台会员中心
         'usercenter'          => true,
         //登录验证码
-        'login_captcha'       => true,
+        'login_captcha'       => false,
         //登录失败超过一定次数则1天后重试
         'login_failure_retry' => true,
         //登录失败次数上限制

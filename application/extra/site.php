@@ -1,7 +1,7 @@
 <?php
 
 return array (
-  'name' => 'FastAdmin',
+  'name' => 'etv云平台',
   'beian' => '',
   'cdnurl' => '',
   'version' => '1.0.1',

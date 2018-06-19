@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-15 16:17:05
+Date: 2018-06-19 18:20:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,6 +29,7 @@ CREATE TABLE `zxt_welcome_custom` (
   `weigh` int(3) NOT NULL DEFAULT '0' COMMENT '排序',
   `updatetime` int(10) NOT NULL COMMENT '更新时间',
   `status` varchar(10) NOT NULL DEFAULT '' COMMENT '权重',
+  `audit_status` varchar(20) DEFAULT 'no release' COMMENT '发布',
   PRIMARY KEY (`id`),
   KEY `rid_customid` (`rid`,`custom_id`) USING BTREE,
   KEY `custom_id` (`custom_id`) USING BTREE

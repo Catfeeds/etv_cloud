@@ -195,6 +195,6 @@ return [
 	'Unaudited'                                             => '未审核',
 	'Egis'                                                  => '审核通过',
 	'No egis'                                               => '审核不通过',
-	'Push'                                                  => '发布通过',
-	'No push'                                               => '发布不通过',
+	'Release'                                               => '通过发布',
+	'No release'                                            => '未发布',
 ];

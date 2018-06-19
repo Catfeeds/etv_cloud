@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-10 17:42:03
+Date: 2018-06-19 17:09:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,6 +27,7 @@ CREATE TABLE `zxt_custom` (
   `province_id` int(5) NOT NULL COMMENT '省份ID',
   `city_id` int(5) NOT NULL COMMENT '城市ID',
   `area_id` int(5) NOT NULL COMMENT '地区ID',
+  `skin_id` int(10) DEFAULT '0' COMMENT '皮肤ID',
   `custom_name` varchar(64) NOT NULL COMMENT '客户名称',
   `full_name` varchar(64) NOT NULL COMMENT '全称',
   `custom_type` varchar(20) NOT NULL DEFAULT 'hospital' COMMENT '客户类型',
@@ -38,6 +39,7 @@ CREATE TABLE `zxt_custom` (
   `createtime` int(10) NOT NULL COMMENT '创建时间',
   `updatetime` int(10) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `custom_id` (`custom_id`,`status`) USING BTREE,
   KEY `pid_and_name` (`id`,`pid`,`custom_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

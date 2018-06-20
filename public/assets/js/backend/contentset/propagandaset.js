@@ -32,7 +32,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'resource.filepath', title:__('Filepath'), operate:false,formatter: Controller.api.formatter.url},
                         {field: 'save_set', title: __('Save_set'), formatter: Controller.api.formatter.save_set_text},
                         {field: 'operate', title: __('Operate'), table: table, formatter: Controller.api.formatter.operate},
-                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status}
+                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
+                        {field: 'audit_status', title:__('Audit status'), formatter:Controller.api.formatter.audit_status_text}
                     ]
                 ],
                 showToggle: false,
@@ -96,6 +97,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         });
                     }
                     return Table.api.buttonlink(this, buttons, value, row, index, 'operate');
+                },
+                audit_status_text: function (value) {
+                    var text = '';
+                    switch (value){
+                        case 'no release':
+                            text = 'No release';
+                            break;
+                        case 'release':
+                            text = 'Release';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
+
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
                 }
             }
         }

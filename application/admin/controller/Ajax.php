@@ -391,7 +391,7 @@ class Ajax extends Backend
     public function myarea()
     {
         $getvalue = $this->request->get();
-        if(isset($getvalue['row']) && isset($getvalue['row']['province'])){
+        if(isset($getvalue['row']) && isset($getvalue['row']['province_id'])){
             $province = $getvalue['row']['province_id'];
             if(isset($getvalue['row']['city_id'])){
                 $city = $getvalue['row']['city_id'];

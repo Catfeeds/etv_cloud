@@ -203,10 +203,12 @@ class Jumpset extends Backend
 	 * 资源
 	 */
 	public function resources($custom_id = ""){
-		$where['zxt_jump_custom.custom_id'] = array('eq', $custom_id);
-
 		if ($this->request->isAjax())
 		{
+			$this->request->filter(['strip_tags']);
+			$filter = $this->request->get("filter", '');
+			$filter_decode = json_decode($filter, true);
+			$where['jc.custom_id'] = array('eq', $filter_decode['custom_id']);
 			$total = model('jump_custom')
 				->alias('jc')
 				->join('zxt_jump_custom jr', 'jc.rid=jr.id')
@@ -215,11 +217,10 @@ class Jumpset extends Backend
 
 			$list = model('jump_custom')
 				->alias('jc')
-				->where($where)
 				->join('zxt_jump_resource jr', 'jc.rid=jr.id')
-				->field('jc.id, jc.status, jr.title, jr.file_type, jr.filepath, jr.size')
+				->where($where)
+				->field('jc.id, jc.status,jc.audit_status, jr.title, jr.file_type, jr.filepath, jr.size')
 				->select();
-
 			$cdnurl = preg_replace("/\/(\w+)\.php$/i", '', $this->request->root());
 			foreach ($list as $k => &$v)
 			{
@@ -232,6 +233,7 @@ class Jumpset extends Backend
 
 			return json($result);
 		}
+		$this->assignconfig('custom_id', $custom_id);
 		return $this->view->fetch();
 	}
 

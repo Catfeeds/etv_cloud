@@ -10,5 +10,6 @@ return [
 	'Save_set_text2'    =>  'SD卡存储',
 	'Filepath'          =>  '文件',
 	'Preview'           =>  '预览',
+	'Audit status'      =>  '发布状态',
 
 ];

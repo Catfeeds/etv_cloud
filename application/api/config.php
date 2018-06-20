@@ -5,8 +5,11 @@ return [
     'exception_handle'        => '\\app\\api\\library\\ExceptionHandle',
 	// 缓存时间  单位s
 	'api_cache_time'    =>  [
-		'skin'      =>  600,
-		'welcome'   =>  600,
+		'skin'      =>  60,
+		'welcome'   =>  60,
+		'language'  =>  60,
+		'notice'    =>  60,
+		'jump'      =>  60,
 
 	],
 ];

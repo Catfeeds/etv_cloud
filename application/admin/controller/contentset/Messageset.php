@@ -91,14 +91,11 @@ class Messageset extends Backend
 						$params['push_start_time'] = date("Y-m-d H:i:s");
 					}
 					//是否采用模型验证
-					if ($this->modelValidate)
-					{
+					if ($this->modelValidate) {
 						$name = basename(str_replace('\\', '/', get_class($this->model)));
 						$validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.add' : true) : $this->modelValidate;
 						$this->model->validate($validate);
 					}
-					if('user defined' != $params['push_type'])
-						$params['push_start_time'] = '';
 					$result = $this->model->allowField(true)->save($params);
 					if ($result !== false)
 					{

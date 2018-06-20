@@ -16,9 +16,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             var table = $("#table");
 
-            //Bootstrap-table配置
-            var options = table.bootstrapTable('getOptions');
-
             //当内容渲染完成后
             table.on('post-body.bs.table', function (e, settings, json, xhr) {
                 // 资源窗口
@@ -26,9 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     var that = this;
                     ////循环弹出多个编辑框
                     $.each(table.bootstrapTable('getSelections'), function (index, row) {
-                        var url = 'contentset/jumpset/resources/custom_id/'+row['custom_id'];
-                        row = $.extend({}, row ? row : {}, {ids: row[options.pk]});
-                        var url = Table.api.replaceurl(url, row, table);
+                        var url = 'contentset/jumpset/resources/custom_id/'+row['custom']['id'];
                         Fast.api.open(url, __('Resources'));
                     });
                 });
@@ -79,6 +74,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: 'contentset/jumpset/resources',
                 sortName: 'id',
                 search: false,
+                queryParams: function (params) {
+                    params.filter = JSON.stringify({'custom_id': Config.custom_id});
+                    return {
+                        filter: params.filter
+                    };
+                },
                 columns: [
                     [
                         {checkbox: true},
@@ -87,7 +88,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'filepath', title: __('Preview'), operate:false, formatter: Controller.api.formatter.thumb},
                         {field: 'filepath', title: __('Filepath'), operate:false,formatter: Controller.api.formatter.url},
                         {field: 'size', title: __('Size')+'(MB)', operate:false},
-                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false}
+                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
+                        {field: 'audit_status', title: __('Audit status'), formatter: Controller.api.formatter.audit_status_text, operate:false},
                     ]
                 ],
                 search:false,
@@ -150,7 +152,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: function (value, row) {
                     return '<a href="' + row.fullurl + '" target="_blank" class="label bg-green">' + value + '</a>';
                 },
+                audit_status_text: function (value, row) {
+                    var text = '';
+                    switch (value){
+                        case 'no release':
+                            text = 'No release';
+                            break;
+                        case 'release':
+                            text = 'Release';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
 
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
+                }
             }
         }
     };

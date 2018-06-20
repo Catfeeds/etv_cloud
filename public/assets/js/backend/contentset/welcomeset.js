@@ -23,7 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id'), visible:false},
                         {field: 'custom.custom_id', title: __('Custom_id')},
                         {field: 'custom.custom_name', title: __('Custom_name')},
                         {field: 'title', title: __('Title')},
@@ -34,7 +34,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'weigh', title: __('Weigh')},
                         {field: 'updatetime', title: __('Updatetime'), formatter: Table.api.formatter.datetime},
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
-                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {field: 'audit_status', title:__('Audit status'), formatter:Controller.api.formatter.audit_status_text}
                     ]
                 ],
                 showToggle: false,
@@ -96,6 +96,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         return value;
                     }
                 },
+                audit_status_text: function (value) {
+                    var text = '';
+                    switch (value){
+                        case 'no release':
+                           text = 'No release';
+                           break;
+                        case 'release':
+                            text = 'Release';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
+
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
+                }
             },
         }
     };

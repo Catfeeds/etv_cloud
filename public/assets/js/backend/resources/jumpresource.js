@@ -48,10 +48,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             formatter: Table.api.formatter.datetime, operate:false},
                         {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange',
                             formatter: Table.api.formatter.datetime, operate:false},
-                        {field: 'size', title: __('Size')+'(MB)', operate:'false'},
+                        {field: 'size', title: __('Size')+'(MB)', operate:false},
                         {field: 'audit_status', title: __('Audit_status'),
                             formatter: Controller.api.formatter.audit_status,
-                            searchList: {"0":__('No audit'),"1":__('No egis'), "2":__('Egis'), "3":__('No publish'), "4":__('Publish')}
+                            searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
                         },
                     ]
                 ]
@@ -77,20 +77,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 audit_status: function(value){
                     var text = '';
                     switch (value){
-                        case 0:
-                            text = 'No audit';
+                        case 'unaudited':
+                            text = 'Unaudited';
                             break;
-                        case 1:
+                        case 'no egis':
                             text = 'No egis';
                             break;
-                        case 2:
+                        case 'egis':
                             text = 'Egis';
-                            break;
-                        case 3:
-                            text = 'No publish';
-                            break;
-                        case 4:
-                            text = 'Publish';
                             break;
                         default:
                             text = 'Undefined state';

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-06-08 16:59:31
+Date: 2018-06-21 10:01:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,7 @@ CREATE TABLE `zxt_simplead_resource` (
   `createtime` int(10) NOT NULL COMMENT '创建时间',
   `updatetime` int(10) NOT NULL,
   `size` float(5,3) NOT NULL COMMENT '资源大小',
-  `audit_status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '审核状态',
+  `audit_status` varchar(20) NOT NULL DEFAULT 'unaudited' COMMENT '审核状态',
   PRIMARY KEY (`id`),
   KEY `admin_id` (`admin_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='简易广告管理';

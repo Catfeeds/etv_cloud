@@ -33,10 +33,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'weigh', title: __('Weigh')},
                         {field: 'save_set', title: __('Save_set'), formatter: Controller.api.formatter.save_set_text},
                         {field: 'status', title: __('Status'), events: Controller.api.events.operate, formatter: Controller.api.formatter.status},
-                        {field: 'audit_status', title: __('Audit_status'),
-                            formatter: Controller.api.formatter.audit_status,
-                            searchList: {"0":__('No audit'),"1":__('No egis'), "2":__('Egis'), "3":__('No publish'), "4":__('Publish')}
-                        },
+                        {field: 'audit_status', title:__('Audit status'), formatter:Controller.api.formatter.audit_status_text},
                         {field: 'rid', title:'<a href="javascript:;" class="btn btn-success btn-xs btn-toggle"><i class="fa fa-chevron-up"></i></a>',
                             operate: false, formatter: Controller.api.formatter.subnode
                         },
@@ -237,23 +234,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     return "<a href='javascript:;' class='btn btn-" + (value=='hidden' ? "default" : "info") +
                         " btn-xs btn-status' >" + (value=='hidden'? __('Hidden') : __('Normal')) + "</a>";
                 },
-                audit_status: function (value) {
+                audit_status_text: function (value, row) {
                     var text = '';
-                    switch (value) {
-                        case 0:
-                            text = 'No audit';
+                    switch (value){
+                        case 'no release':
+                            text = 'No release';
                             break;
-                        case 1:
-                            text = 'No egis';
-                            break;
-                        case 2:
-                            text = 'Egis';
-                            break;
-                        case 3:
-                            text = 'No publish';
-                            break;
-                        case 4:
-                            text = 'Publish';
+                        case 'release':
+                            text = 'Release';
                             break;
                         default:
                             text = 'Undefined state';

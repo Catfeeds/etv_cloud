@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-05-10 17:05:29
+Date: 2018-06-21 14:26:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,14 +24,14 @@ CREATE TABLE `zxt_column_custom` (
   `custom_id` int(11) NOT NULL COMMENT '客户列表ID',
   `rid` int(11) NOT NULL COMMENT '栏目ID',
   `save_set` tinyint(1) NOT NULL DEFAULT '1' COMMENT '资源保存路径',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
-  `weigh` int(5) NOT NULL COMMENT '权重',
   `column_weigh` text COMMENT '栏目权重',
   `column_status` text COMMENT '栏目状态',
   `resource_weigh` text COMMENT '资源权重',
   `resource_status` text COMMENT '资源状态',
+  `column_audit_status` text COMMENT '栏目发布',
+  `resource_audit_status` text COMMENT '资源发布',
   PRIMARY KEY (`id`),
-  KEY `rid_customid` (`rid`,`custom_id`) USING BTREE
+  UNIQUE KEY `rid_customid` (`rid`,`custom_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='客户栏目资源绑定表';
 
 -- ----------------------------

@@ -10,6 +10,8 @@ return [
 		'language'  =>  60,
 		'notice'    =>  60,
 		'jump'      =>  60,
+		'propaganda'=>  60,
+		'simplead'  =>  10,
 
 	],
 ];

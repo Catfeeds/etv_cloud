@@ -52,9 +52,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'audit_status', title: __('Audit_status'),
                             formatter: Controller.api.formatter.audit_status,
                             searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
-                        },
+                        }
                     ]
-                ]
+                ],
+                showToggle: false,
+                showExport: false
             });
 
             // 为表格绑定事件

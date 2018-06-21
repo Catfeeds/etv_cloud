@@ -55,7 +55,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                             searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
                         }
                     ]
-                ]
+                ],
+                showToggle: false,
+                showExport: false
             });
 
             // 为表格绑定事件

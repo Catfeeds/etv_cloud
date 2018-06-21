@@ -13,7 +13,8 @@ class Column extends Validate
         'pid'       => 'require|number',
         'title'     => 'require|max:40',
         'filepath'  => 'max:100',
-        'language_type' =>  'in:chinese,englist',
+        'language_type' =>  'in:chinese,english',
+	    'column_type'   =>  'require|in:resource,app'
     ];
     /**
      * 提示消息

@@ -8,7 +8,10 @@ return [
 	'Preview'       =>  '预览',
 	'Language_type' =>  '语言类型',
 	'Image'         =>  '图标',
-	'Menu'         =>   '栏目',
+	'Menu'          =>  '栏目',
+	'Column type'   =>  '栏目类型',
+	'Resource'      =>  '资源类型',
+	'App'           =>  'App类型',
 	'Select the same language as the superior'  => '请选取与上级相同的语言设置',
 	'Resources tips'=>  '暂仅对第三级栏目开放进行资源操作',
 	'Allot tips'    =>  '暂仅能针对一级栏目进行资源的分配操作'

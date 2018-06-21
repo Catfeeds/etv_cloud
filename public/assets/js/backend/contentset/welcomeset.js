@@ -75,7 +75,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: function (value, row) {
                     return '<a href="' + row.fullurl + '" target="_blank" class="label bg-green">' + value + '</a>';
                 },
-                stay_set_text: function(value, row){
+                stay_set_text: function(value){
                     var text = '';
                     switch (value){
                         case 1:
@@ -111,7 +111,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
                     return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
                 }
-            },
+            }
         }
     };
     return Controller;

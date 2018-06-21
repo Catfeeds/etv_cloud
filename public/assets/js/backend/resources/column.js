@@ -29,18 +29,18 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'title', title: __('Title'), align: 'left', formatter: Controller.api.formatter.title},
                         {field: 'filepath', title: __('Preview'), operate:false, formatter: Controller.api.formatter.thumb},
                         {field: 'language_type', title: __('Language_type'), formatter: Controller.api.formatter.language_type},
+                        {field: 'column_type', title: __('Column type'), formatter:Controller.api.formatter.column_type_text, operate:false},
                         {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange',
                             formatter: Table.api.formatter.datetime, operate:false},
-                        {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange',
-                            formatter: Table.api.formatter.datetime, operate:false},
+                        {field: 'updatetime', title: __('Updatetime'), formatter: Table.api.formatter.datetime, operate:false},
                         {field: 'id', title:
                             '<a href="javascript:;" class="btn btn-success btn-xs btn-toggle"><i class="fa fa-chevron-up"></i></a>',
                             operate: false, formatter: Controller.api.formatter.subnode
                         },
                         {field: 'audit_status', title: __('Audit_status'),
                             formatter: Controller.api.formatter.audit_status,
-                            searchList: {"0":__('No audit'),"1":__('No egis'), "2":__('Egis'), "3":__('No publish'), "4":__('Publish')}
-                        },
+                            searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
+                        }
                     ]
                 ],
                 showToggle: false,
@@ -127,6 +127,16 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
         },
         add: function () {
+            $(".pid").on("change", function () {
+                var pid = $(".pid option:selected").val();
+                if(pid == 0){
+                    var append_html = '<option value="resource">'+__("Resource")+'</option><option value="app">'+__("App")+'</option>';
+                    $(".column_type").empty();
+                    $(".column_type").append(append_html);
+                }else{
+                    $(".column_type option[value='app']").remove();
+                }
+            });
             Controller.api.bindevent();
         },
         edit: function () {
@@ -137,37 +147,34 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 Form.api.bindevent($("form[role=form]"));
             },
             formatter: {
-                title: function (value, row, index) {
+                title: function (value, row) {
                     return row.level == 1? "<span class='text-muted'>" + value + "</span>" : value;
                 },
                 thumb: function (value, row) {
                     return '<a href="' + row.fullurl + '" target="_blank"><img src="' + row.fullurl + '" alt="" style="max-height:90px;max-width:120px"></a>';
                 },
-                subnode: function (value, row, index) {
+                subnode: function (value, row) {
                     return '<a href="javascript:;" data-id="' + row.id + '" data-pid="' + row.pid + '" class="btn btn-xs '
                         + (row.level==1 ? 'level_first ' : ' ')
                         + (row.haschild == 1 ? 'btn-success' : 'btn-default disabled') + ' btn-node-sub"><i class="fa fa-sitemap"></i></a>';
                 },
-                language_type: function (value, row, index) {
+                language_type: function (value) {
                     return '<span class="text-success"><i class="fa fa-circle"></i> ' + __(value) + '</span>';
+                },
+                column_type_text: function(value){
+                    return __(value);
                 },
                 audit_status: function(value){
                     var text = '';
                     switch (value){
-                        case 0:
-                            text = 'No audit';
+                        case 'unaudited':
+                            text = 'Unaudited';
                             break;
-                        case 1:
+                        case 'no egis':
                             text = 'No egis';
                             break;
-                        case 2:
+                        case 'egis':
                             text = 'Egis';
-                            break;
-                        case 3:
-                            text = 'No publish';
-                            break;
-                        case 4:
-                            text = 'Publish';
                             break;
                         default:
                             text = 'Undefined state';

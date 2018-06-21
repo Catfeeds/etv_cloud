@@ -74,6 +74,7 @@ class Columnset extends Backend
 
 	/**
 	 * 获取栏目列表方法
+	 * @$first_custom_id 客户ID
 	 */
 	public function column_list($first_custom_id){
 
@@ -84,10 +85,11 @@ class Columnset extends Backend
 		foreach($column_custom_list as $column_value){
 			$rid_weigh_status[$column_value['rid']]['column_weigh'] = $column_value['column_weigh']?json_decode($column_value['column_weigh'], true):null;
 			$rid_weigh_status[$column_value['rid']]['column_status'] = $column_value['column_status']?json_decode($column_value['column_status'], true):null;
+//			$rid_weigh_status[$column_value['rid']]['resource_status'] = $column_value['resource_status']?json_decode($column_value['resource_status'], true):null;
+//			$rid_weigh_status[$column_value['rid']]['resource_weigh'] = $column_value['resource_weigh']?json_decode($column_value['resource_weigh'], true):null;
+			$rid_weigh_status[$column_value['rid']]['column_audit_status'] = $column_value['column_audit_status']?json_decode($column_value['column_audit_status'], true):null;
 			$rid_save_set[$column_value['rid']]['save_set'] = $column_value['save_set'];
 			$ccid_list[$column_value['rid']]['id'] = $column_value['id'];
-			$rid_weigh_status[$column_value['rid']]['resource_status'] = $column_value['resource_status']?json_decode($column_value['resource_status'], true):null;
-			$rid_weigh_status[$column_value['rid']]['resource_weigh'] = $column_value['resource_weigh']?json_decode($column_value['resource_weigh'], true):null;
 		}
 		if(!empty($column_custom_list)){
 			$column_id = array_column($column_custom_list, 'rid');  //客户绑定的栏目列表ID
@@ -115,6 +117,7 @@ class Columnset extends Backend
 				//处理排序和状态
 				$v['weigh'] = isset($rid_weigh_status[$v['fpid']]['column_weigh'][$v['id']])?$rid_weigh_status[$v['fpid']]['column_weigh'][$v['id']]:'100';
 				$v['status'] = isset($rid_weigh_status[$v['fpid']]['column_status'][$v['id']])?$rid_weigh_status[$v['fpid']]['column_status'][$v['id']]:'hidden';
+				$v['audit_status'] = isset($rid_weigh_status[$v['fpid']]['column_audit_status'][$v['id']])?$rid_weigh_status[$v['fpid']]['column_audit_status'][$v['id']]:'no release';
 				array_push($weigh_list, $v['weigh']);
 
 				//处理所属绑定表ID

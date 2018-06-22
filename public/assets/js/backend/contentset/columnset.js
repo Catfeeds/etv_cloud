@@ -151,6 +151,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'size', title: __('Size')+'(MB)', operate:false},
                         {field: 'status', title: __('Status'), events: Controller.api.events.operate,
                             formatter: Controller.api.formatter.resource_status},
+                        {field: 'egis_status', title:__('Egis status'), formatter:Controller.api.formatter.egis_status_text},
+                        {field: 'release_status', title:__('Release status'), formatter:Controller.api.formatter.release_status_text},
                         {field: 'operate', title: __('Operate'), table: resource_table, formatter: Controller.api.formatter.resource_operate}
                     ]
                 ],
@@ -297,6 +299,37 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     }
                     return Table.api.buttonlink(this, buttons, value, row, index, 'operate');
                 },
+                egis_status_text: function (value) {
+                    var text = '';
+                    switch (value){
+                        case 'unaudited':
+                            text = 'Unaudited';
+                            break;
+                        case 'no egis':
+                            text = 'No egis';
+                            break;
+                        case 'egis':
+                            text = 'Egis';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
+                },
+                release_status_text: function (value) {
+                    var text = '';
+                    switch (value){
+                        case 'no release':
+                            text = 'No release';
+                            break;
+                        case 'release':
+                            text = 'Release';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
+                }
             },
             events: {
                 operate: {
@@ -344,7 +377,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         }
                         var table = $(this).closest('table');
                         var url = 'contentset/columnset/resources/ccid/'+row['ccid']+'/id/'+row['id'];
-                        Fast.api.open(Table.api.replaceurl(url, row, table), __('Resources'), $(this).data() || {});
+                        Fast.api.open(url, __('Resources'), {area:["100%", "100%"]});
                     },
                     // 动态修改资源状态
                     'click .btn-resource-status': function (e, value, row, index){

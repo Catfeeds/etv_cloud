@@ -8,8 +8,10 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use think\Cache;
 use think\Config;
 use think\Db;
+use think\Exception;
 use think\exception\PDOException;
 use think\Log;
 
@@ -21,12 +23,6 @@ class Custom extends Api
 	protected $beforeActionList = [
 		//无值的话为当前控制器下所有方法的前置方法
 		'check_params',
-
-		// except表示不使用前置方法
-//		'mytest'    =>  ['except'=>''],
-
-		// only表示使用前置方法
-//		'beforefunc'    =>  ['only'=>'mytest']
 	];
 
 	/**
@@ -49,7 +45,7 @@ class Custom extends Api
 		$custom_id = $this->request->get('custom_id');
 		$where['custom_id'] = $custom_id;
 		$where['status'] = 'normal';
-		return Db::name('custom')->where($where)->cache('custom_obj', 60)->field($field)->find();
+		return Db::name('custom')->where($where)->cache(30)->field($field)->find();
 	}
 
 	/**
@@ -61,7 +57,7 @@ class Custom extends Api
 		$mac = $this->request->get('mac');
 		$where['mac'] = $mac;
 		$where['status'] = 'normal';
-		return Db::name('device_basics')->where($where)->field($field)->find();
+		return Db::name('device_basics')->where($where)->cache(30)->field($field)->find();
 	}
 
 	/**
@@ -74,14 +70,14 @@ class Custom extends Api
 		$custom_obj = $this->get_custom();
 		if(!empty($custom_obj)){
 			$cache_time = Config::get('api_cache_time');
-			$skin_cache_time = isset($cache_time['skin'])? $cache_time['skin']: 0;
+			$skin_cache_time = isset($cache_time['skin'])? $cache_time['skin']: 10;
 			$skin_obj = []; //数据集合
 			try{
 				$skin_obj = Db::name('skin')
 					->where('status', 'eq', 'normal')
 					->cache($skin_cache_time)
 					->select(); //缓存10分钟
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户皮肤出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户皮肤出错', null, -5);
@@ -117,7 +113,7 @@ class Custom extends Api
 			$where['wc.custom_id'] = $custom_obj['id'];
 			$where['wr.audit_status'] = 'egis';
 			$cache_time = Config::get('api_cache_time');
-			$welcome_cache_time = isset($cache_time['welcome'])? $cache_time['welcome']: 0;
+			$welcome_cache_time = isset($cache_time['welcome'])? $cache_time['welcome']: 10;
 			$field = 'wc.id, wc.title, wc.stay_set, wc.stay_time, wc.weigh, wc.audit_status, wr.filepath, wr.file_type, wr.size';
 			try{
 				$welcome_obj = Db::name('welcome_custom')
@@ -127,7 +123,7 @@ class Custom extends Api
 					->where($where)
 					->field($field)
 					->select();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户欢迎设置出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户欢迎设置出错', null, -5);
@@ -149,10 +145,10 @@ class Custom extends Api
 			$where['status'] = 'normal';
 			$field = 'title, language, appellation, wel_words, signature';
 			$cache_time = Config::get('api_cache_time');
-			$language_cache_time = isset($cache_time['language'])? $cache_time['language']: 0;
+			$language_cache_time = isset($cache_time['language'])? $cache_time['language']: 10;
 			try{
 				$language_obj = Db::name('language_setting')->where($where)->cache($language_cache_time)->field($field)->find();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户管理设置出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户管理设置出错', null, -5);
@@ -223,7 +219,7 @@ class Custom extends Api
 				$data['text_night'] = $return['results'][0]['daily'][0]['text_night'];
 				try{
 					Db::name('weather')->strict(true)->insert($data,true);
-				}catch (\PDOException $e){
+				}catch (PDOException $e){
 					Log::write('插入天气出错,客户ID为:'.$custom_obj['id'] .' 错误信息为:'.$e->getMessage());
 					Log::save();
 					$this->error('更新天气出错', null, -5);
@@ -250,11 +246,11 @@ class Custom extends Api
 			$where['custom_id'] = $custom_obj['id'];
 			$where['mac_ids'] = ['like',$device_obj['id']];
 			$cache_time = Config::get('api_cache_time');
-			$notice_cache_time = isset($cache_time['notice'])? $cache_time['notice']: 0;
+			$notice_cache_time = isset($cache_time['notice'])? $cache_time['notice']: 10;
 			$field = 'title, content, push_type, push_start_time, push_end_time';
 			try{
 				$notice_obj = Db::name('message_notice')->where($notice_cache_time)->field($field)->select();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户消息提醒出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户消息提醒出错', null, -5);
@@ -273,13 +269,13 @@ class Custom extends Api
 		$custom_obj = $this->get_custom('id');
 		if(!empty($custom_obj)){
 			$cache_time = Config::get('api_cache_time');
-			$jump_cache_time = isset($cache_time['jump'])? $cache_time['jump']: 0;
+			$jump_cache_time = isset($cache_time['jump'])? $cache_time['jump']: 10;
 			$where['custom_id'] = $custom_obj['id'];
 			$setting_obj = [];
 			try{
 				//获取跳转设置
 				$setting_obj = Db::name('jump_setting')->where($where)->field('play_set, save_set')->find();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户跳转设置出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户跳转设置出错', null, -5);
@@ -300,7 +296,7 @@ class Custom extends Api
 					->field($field)
 					->cache($jump_cache_time)
 					->select();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户跳转资源出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户跳转资源出错', null, -5);
@@ -322,7 +318,7 @@ class Custom extends Api
 		if(!empty($custom_obj)){
 			$propagand_obj = [];
 			$cache_time = Config::get('api_cache_time');
-			$propaganda_cache_time = isset($cache_time['propaganda'])? $cache_time['propaganda']: 0;
+			$propaganda_cache_time = isset($cache_time['propaganda'])? $cache_time['propaganda']: 10;
 			$where['pc.custom_id'] = $custom_obj['id'];
 			$where['pc.status'] = 'normal';
 			$where['pr.audit_status'] = 'egis';
@@ -335,7 +331,7 @@ class Custom extends Api
 					->join('zxt_propaganda_resource pr', 'pc.rid=pr.id', 'LEFT')
 					->field($field)
 					->select();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户轮播资源出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户轮播资源出错', null, -5);
@@ -357,7 +353,7 @@ class Custom extends Api
 			$where['sc.status'] = 'normal';
 			$where['sr.audit_status'] = 'egis';
 			$cache_time = Config::get('api_cache_time');
-			$simplead_cache_time = isset($cache_time['simplead'])? $cache_time['simplead']: 0;
+			$simplead_cache_time = isset($cache_time['simplead'])? $cache_time['simplead']: 10;
 			$field = 'sc.title, sc.url_to, sc.audit_status, sr.filepath, sr.file_type, sr.size';
 			try{
 				$simplead_obj = Db::name('simplead_custom')
@@ -366,7 +362,7 @@ class Custom extends Api
 									->join('zxt_simplead_resource sr', 'sc.rid=sr.id', 'LEFT')
 									->field($field)
 									->select();
-			}catch (\PDOException $e){
+			}catch (PDOException $e){
 				Log::write('获取客户简易广告出错,错误信息为:'.$e->getMessage());
 				Log::save();
 				$this->error('获取客户简易广告出错', null, -5);
@@ -376,9 +372,20 @@ class Custom extends Api
 		$this->error(__('Invalid parameters'), null, -2);
 	}
 
+	/**
+	 * @获取栏目列表
+	 * @param custom_id 客户编号
+	 * @param mac MAC编号
+	 */
 	public function column_setting() {
 		$custom_obj = $this->get_custom('id');
 		if(!empty($custom_obj)){
+			//获取缓存
+			$column_cache = Cache::get('column_'.$custom_obj['id'].'_cache');
+			if(!empty($column_cache)){
+				$this->success('Success', $column_cache, 0);
+			}
+
 			$where_custom['custom_id'] = $custom_obj['id'];
 			$basic_obj = Db::name('column_custom')->where($where_custom)
 				->field('rid,save_set,column_weigh,column_status,column_audit_status')
@@ -445,8 +452,143 @@ class Custom extends Api
 				//栏目发布状态设置
 				$column_obj[$key]['audit_status'] = isset($column_audit_status_setting[$value['id']])?$column_audit_status_setting[$value['id']]:'no release';
 			}
+			$cache_time = Config::get('api_cache_time');
+			$column_cache_time = isset($cache_time['column'])? $cache_time['column']: 10;
+			Cache::set('column_'.$custom_obj['id'].'_cache', $column_obj, $column_cache_time);
 			$this->success('Success', $column_obj, 0);
 
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
+	/**
+	 * @获取栏目资源
+	 * @param custom_id 客户编号
+	 * @param column_id 栏目ID
+	 * @param mac MAC编号
+	 */
+	public function column_resource() {
+		$column_id = $this->request->get('column_id');
+		if(empty($column_id))
+			$this->error(__('Parameter error'), [], -1);
+
+		$custom_obj = $this->get_custom('id');
+		if(!empty($custom_obj)){
+			//读取缓存
+			$resource_cache = Cache::get('resource_'.$column_id.'_cache');
+			if(!empty($resource_cache))
+				$this->success('Success', $resource_cache, 0);
+
+			$where['column_pid'] = $column_id;
+			$where['audit_status'] = 'egis';
+			$field = 'id,column_fpid,title,describe,resource_type,resource,size';
+			try{
+				$resource_obj = Db::name('col_resource')->where($where)->field($field)->select();
+			}catch (PDOException $e){
+				Log::write('获取栏目资源出错,错误信息为:'.$e->getMessage());
+				Log::save();
+				$this->error('获取栏目资源出错', null, -5);
+			}
+			if(empty($resource_obj))
+				$this->success('Success', null, 0);
+
+			$where_column['rid'] = $resource_obj[0]['column_fpid']; //根据一级栏目ID查询分配栏目表条件
+			$column_custom_obj = Db::name('column_custom')->where($where_column)->field('id,resource_audit_status')->find();
+
+			//读取栏目分配表数据为空,可能存在错误数据
+			if(empty($column_custom_obj))
+				$this->error('获取资源对应栏目信息出错', null, -4);
+
+			//资源发布数据为空,默认为未发布
+			if(empty($column_custom_obj['resource_audit_status'])){
+				foreach ($resource_obj as $key=>$value){
+					$resource_obj[$key]['audit_status'] = 'no release';
+				}
+			}else{
+				$audit_status_info = json_decode($column_custom_obj['resource_audit_status'], true);
+				foreach ($resource_obj as $key=>$value){
+					$resource_obj[$key]['audit_status'] = isset($audit_status_info[$value['id']])?$audit_status_info[$value['id']]:'no release';
+				}
+			}
+			$cache_time = Config::get('api_cache_time');
+			$resource_cache_time = isset($cache_time['resource'])? $cache_time['resource']: 10;
+			Cache::set('resource_'.$column_id.'_cache', $resource_obj, $resource_cache_time);
+			$this->success('Success', $resource_obj, 0);
+
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
+	/**
+	 * @获取弹窗设置
+	 * @param custom_id 客户编号
+	 * @param mac MAC编号
+	 */
+	public function popup_setting() {
+		$custom_obj = $this->get_custom('id');
+		if(!empty($custom_obj)){
+			$popup_cache = Cache::get('popup_'.$custom_obj['id'].'_cache');
+			if(!empty($popup_cache))
+				$this->success('Success', $popup_cache, 0);
+
+			//弹窗广告列表
+			$where['custom_id'] = $custom_obj['id'];
+			$where['status'] = 'normal';
+			$field = 'ad_type, save_set, repeat_set, break_set, weekday, no_repeat_date, start_time, stay_time, position, words_tips,resource_id';
+			try{
+				$popup_setting_obj = Db::name('popup_setting')->where($where)->field($field)->select();
+			}catch (PDOException $e){
+				Log::write('获取弹窗设置错误,错误信息为:'.$e->getMessage());
+				Log::save();
+				$this->error('获取弹窗设置错误', null, -5);
+			}
+			if(empty($popup_setting_obj))
+				$this->success('Success', null, 0);
+
+			try{
+				$bind_obj = Db::name('popup_custom')->where('custom_id', 'eq', $custom_obj['id'])->field('rid')->select();
+			}catch (PDOException $e){
+				Log::write('获取弹窗广告资源绑定错误,错误信息为:'.$e->getMessage());
+				Log::save();
+				$this->error('获取弹窗广告资源绑定错误', null, -5);
+			}
+			$rids = array_column($bind_obj, 'rid'); //绑定的资源列表
+
+			$resource_list = [];  //资源列表
+			if(!empty($rids)){
+				//弹窗广告资源列表
+				$resource_field = 'id, title, filepath, file_type, size';
+				try{
+					$resource_where['id'] = ['in', $rids];
+					$resource_where['audit_status'] = 'egis';
+					$resource_obj = Db::name('popup_resource')->where($resource_where)->field($resource_field)->select();
+				}catch (PDOException $e){
+					Log::write('获取弹窗资源错误,错误信息为:'.$e->getMessage());
+					Log::save();
+					$this->error('获取弹窗资源错误', null, -5);
+				}
+				if(!empty($resource_obj)){
+					foreach ($resource_obj as $k=>$v){
+						$resource_list[$v['id']] = $v;
+					}
+				}
+			}
+
+			foreach ($popup_setting_obj as $key=>&$value){
+				$resource_id = explode(",", $value['resource_id']);
+				foreach ($resource_id as $rid){
+					if(0 != intval($rid)){
+						$value['resource'][] = isset($resource_list[$rid])? $resource_list[$rid]: [];
+					}else{
+						$value['resource'] = [];
+					}
+				}
+			}
+
+			$cache_time = Config::get('api_cache_time');
+			$popup_cache_time = isset($cache_time['popup'])? $cache_time['popup']: 10;
+			Cache::set('popup_'.$custom_obj['id'].'_cache', $popup_setting_obj, $popup_cache_time);
+			$this->success('Success', $popup_setting_obj, 0);
 		}
 		$this->error(__('Invalid parameters'), null, -2);
 	}

@@ -47,7 +47,8 @@ class Popupset extends Backend
 			$this->searchFields = "custom.custom_id";
 
 			$Customlist_class = new Customlist();
-			$where_customid['zxt_popup_setting.custom_id'] = ['in', $Customlist_class->custom_id($this->admin_id)];
+			$custom_id = $Customlist_class->custom_id($this->admin_id);
+			$where_customid['zxt_popup_setting.custom_id'] = ['in', $custom_id];
 
 			list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 			$total = $this->model
@@ -64,14 +65,23 @@ class Popupset extends Backend
 				->limit($offset, $limit)
 				->select();
 
+			//获取资源分配给客户的绑定关系
+			$bind_obj = Db::name('popup_custom')->where('custom_id', 'in', $custom_id)->field('rid')->select();
+			$rids = array_column($bind_obj, 'rid'); //绑定rid列表
+
 			$cdnurl = preg_replace("/\/(\w+)\.php$/i", '', $this->request->root());
 			foreach ($list as $k => &$v)
 			{
-				if($v['ad_type'] == 'image' || $v['ad_type']=='video'){
-					$v['fullurl'] = $cdnurl . $v['resource']['filepath'];
+				if(in_array($v['resource_id'], $rids)){ //判断资源是否被取消绑定
+					if($v['ad_type'] == 'image' || $v['ad_type']=='video'){
+						$v['fullurl'] = $cdnurl . $v['resource']['filepath'];
+					}else{
+						$v['fullurl'] = '';
+					}
 				}else{
 					$v['fullurl'] = '';
 				}
+
 			}
 			unset($v);
 

@@ -36,6 +36,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'position', title: __('Position'), formatter:Controller.api.formatter.position_text},
                         {field: 'resource', title: __('Resource'), formatter:Controller.api.formatter.resource},
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
+                        {field: 'audit_status', title:__('Audit status'), formatter:Controller.api.formatter.audit_status_text}
                     ]
                 ],
                 showToggle: false,
@@ -210,10 +211,30 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     if(row['ad_type'] == 'word'){
                         return row['words_tips'];
                     }else if(row['ad_type'] == 'video' || row['ad_type'] == 'image'){
-                        return '<a href="' + row.fullurl + '" target="_blank" class="label bg-green">' + row['resource']['title'] + '</a>';
+                        if(row['fullurl']){
+                            return '<a href="' + row.fullurl + '" target="_blank" class="label bg-green">' + row['resource']['title'] + '</a>';
+                        }else {
+                            return '-'
+                        }
+
                     }else{
                         return '-';
                     }
+                },
+                audit_status_text: function (value) {
+                    var text = '';
+                    switch (value){
+                        case 'no release':
+                            text = 'No release';
+                            break;
+                        case 'release':
+                            text = 'Release';
+                            break;
+                        default:
+                            text = 'Undefined state';
+                    }
+
+                    return '<span class="text-info"><i class="fa fa-circle"></i> ' + __(text) + '</span>';
                 }
             }
         },

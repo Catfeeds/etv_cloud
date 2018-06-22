@@ -11,6 +11,7 @@ return [
     'Break_set'     =>  '退出设置',
     'Position'      =>  '位置设定',
     'Status'        =>  '状态',
+	'Audit status'  =>  '发布状态',
 	'Save_set_text1'=>  '本地存储',
 	'Save_set_text2'=>  'SD卡存储',
 	'Video'         =>  '视频',

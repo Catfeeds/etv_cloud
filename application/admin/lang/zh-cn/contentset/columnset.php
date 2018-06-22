@@ -16,6 +16,8 @@ return [
 	'Createtime'            =>  '创建时间',
 	'Updatetime'            =>  '更新时间',
 	'Audit status'          =>  '发布状态',
+	'Egis status'           =>  '审核状态',
+	'Release status'        =>  '发布状态',
 	'Toggle all'            =>  '展开全部',
 	'Resources'             =>  '资源',
 	'Resources tips'        =>  '暂仅对第三级栏目开放进行资源操作',

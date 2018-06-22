@@ -355,7 +355,8 @@ class Columnset extends Backend
 			$column_custom_info = $this->model->get($ccid); //绑定关系表
 			$this->request->filter(['strip_tags']);
 			if(!empty($column_custom_info)){
-				$resources_list = Db::name('col_resource')->where('column_pid', 'eq', $id)->select();
+				$resource_field = 'id,title,describe,resource,resource_type,size,audit_status as egis_status';
+				$resources_list = Db::name('col_resource')->where('column_pid', 'eq', $id)->field($resource_field)->select();
 				if(!empty($resources_list)){
 
 					//资源状态
@@ -366,6 +367,11 @@ class Columnset extends Backend
 					//排序状态
 					if(!empty($column_custom_info['resource_weigh'])){
 						$resource_weigh = json_decode($column_custom_info['resource_weigh'], true);
+					}
+
+					//发布状态
+					if(!empty($column_custom_info['resource_audit_status'])){
+						$resource_audit_status = json_decode($column_custom_info['resource_audit_status'], true);
 					}
 
 					$cdnurl = preg_replace("/\/(\w+)\.php$/i", '', $this->request->root()); //全链接
@@ -385,6 +391,8 @@ class Columnset extends Backend
 						$v['status'] = isset($resource_status[$v['id']])?$resource_status[$v['id']]:'hidden';
 						//添加排序
 						$v['weigh'] = isset($resource_weigh[$v['id']])?$resource_weigh[$v['id']]:100;
+						//添加发布状态
+						$v['release_status'] = isset($resource_audit_status[$v['id']])?$resource_audit_status[$v['id']]:'no release';
 					}
 					unset($v);
 				}

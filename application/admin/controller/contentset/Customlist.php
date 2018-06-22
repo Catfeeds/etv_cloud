@@ -13,6 +13,8 @@ class Customlist extends Controller
 	protected $noNeedLogin = [];
 	protected $noNeedRight = [];
 
+	protected $cache_time = 60;
+
 	public function _initialize()
 	{
 		parent::_initialize();
@@ -49,17 +51,17 @@ class Customlist extends Controller
 	 * 获取账号绑定的客户列表ID
 	 */
 	public function custom_id($admin_id){
-		$admin_custom_bind = Db::name('admin_custom_bind')->where('admin_id','eq',$admin_id)->find();
+		$admin_custom_bind = Db::name('admin_custom_bind')->where('admin_id','eq',$admin_id)->cache($this->cache_time)->find();
 
 		// 权限判断
 		if(empty($admin_custom_bind)){ //绑定表为空
-			$content_set_config = Db::name('config')->where('name','eq','content_set')->field('value')->find();
+			$content_set_config = Db::name('config')->where('name','eq','content_set')->cache($this->cache_time)->field('value')->find();
 			if(!empty($content_set_config)){
 				$content_set_config = json_decode($content_set_config['value'], true);
 				$custom_key = array_keys($content_set_config);
 				if(in_array($admin_id, $custom_key)){
 					if($content_set_config[$admin_id] == "*"){  //查询全部
-						$custom_id_list = Db::name('custom')->field('id')->select();
+						$custom_id_list = Db::name('custom')->cache($this->cache_time)->field('id')->select();
 						return array_column($custom_id_list, 'id');
 					}else{
 						return explode(",", $content_set_config[$admin_id]);

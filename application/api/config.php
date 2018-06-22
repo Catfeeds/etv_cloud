@@ -12,6 +12,9 @@ return [
 		'jump'      =>  60,
 		'propaganda'=>  60,
 		'simplead'  =>  10,
+		'column'    =>  60,
+		'resource'  =>  60,
+		'popup'     =>  60,
 
 	],
 ];

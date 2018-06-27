@@ -63,8 +63,7 @@ class Config extends Backend
             $index++;
         }
         $this->view->assign('siteList', $siteList);
-        $this->view->assign('typeList', ConfigModel::getTypeList());  //读取配置类型
-        $this->view->assign('groupList', ConfigModel::getGroupList());  //读取分类分组列表
+        $this->view->assign('groupList', $groupList);  //读取分类分组列表
         return $this->view->fetch();
     }
 
@@ -149,16 +148,15 @@ class Config extends Backend
                         $configList[] = $v->toArray();
                     }
                 }
-                $this->model->allowField(true)->saveAll($configList);
-                try
-                {
-//                    $this->refreshFile();
-                    $this->success();
-                }
-                catch (Exception $e)
-                {
-                    $this->error($e->getMessage());
-                }
+	            try
+	            {
+	                $this->model->allowField(true)->saveAll($configList);
+	            }
+	            catch (\Exception $e)
+	            {
+		            $this->error(__('Operation failed'));
+	            }
+	            $this->success(__('Operation completed'));
             }
             $this->error(__('Parameter %s can not be empty', ''));
         }

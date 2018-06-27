@@ -64,5 +64,6 @@ return [
 	'Content setting'           =>  '查看内容设置配置',
 	'Content column setting'    =>  '查看栏目设置的客户配置',
 	'Devices manage'            =>  '设备管理查看客户配置',
+	'Dashboard group'           =>  '控制台信息查看配置'
 
 ];

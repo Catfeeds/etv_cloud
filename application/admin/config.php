@@ -8,6 +8,8 @@ return [
 
 	// 客户类型
 	'custom_type_arr'        => ['hospital'=> '医院', 'hotel'=> '酒店'],
+	// 控制台,可查看所有客户,设备的组别
+	'dashboard_lookall_id'   => ['2'],
 	// 可查看所有附件的账号id
 	'attachment_lookall_id'  => ['1'],
 	// 密码含有账号的字符次数

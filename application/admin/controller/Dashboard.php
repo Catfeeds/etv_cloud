@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\controller\Backend;
 use think\Config;
+use think\Db;
 
 /**
  * 控制台
@@ -13,41 +14,49 @@ use think\Config;
  */
 class Dashboard extends Backend
 {
-
     /**
      * 查看
      */
     public function index()
     {
-        $seventtime = \fast\Date::unixtime('day', -7);
-        $paylist = $createlist = [];
-        for ($i = 0; $i < 7; $i++)
-        {
-            $day = date("Y-m-d", $seventtime + ($i * 86400));
-            $createlist[$day] = mt_rand(20, 200);
-            $paylist[$day] = mt_rand(1, mt_rand(1, $createlist[$day]));
-        }
-        $hooks = config('addons.hooks');
-        $uploadmode = isset($hooks['upload_config_init']) && $hooks['upload_config_init'] ? implode(',', $hooks['upload_config_init']) : 'local';
-        $addonComposerCfg = ROOT_PATH . '/vendor/karsonzhang/fastadmin-addons/composer.json';
-        Config::parse($addonComposerCfg, "json", "composer");
-        $config = Config::get("composer");
-        $addonVersion = isset($config['version']) ? $config['version'] : __('Unknown');
-        $this->view->assign([
-            'totaluser'        => 35200,
-            'totalviews'       => 219390,
-            'totalorder'       => 32143,
-            'totalorderamount' => 174800,
-            'todayuserlogin'   => 321,
-            'todayusersignup'  => 430,
-            'todayorder'       => 2324,
-            'unsettleorder'    => 132,
-            'sevendnu'         => '80%',
-            'sevendau'         => '32%',
-            'paylist'          => $paylist,
-            'createlist'       => $createlist,
-            'addonversion'       => $addonVersion,
-            'uploadmode'       => $uploadmode
+    	$admin_id = $this->auth->id;
+	    $admin_custom_bind = Db::name('admin_custom_bind')->where('admin_id','eq',$admin_id)->find();
+
+	    if(!empty($admin_custom_bind) && !empty($admin_custom_bind['custom_id'])){ //含有绑定客户
+	    	$count_custom = count(explode(",", $admin_custom_bind['custom_id']));
+		    $device_info = Db::name('device_basics')->where('custom_id','in',$admin_custom_bind['custom_id'])->field('id,status')->select();
+		    $count_device = count($device_info);
+		    if(0 != $count_device){ //是否含有设备
+			    $device_status_info = array_column($device_info, 'status');
+			    $status_info = array_count_values($device_status_info);
+			    $count_normal = $status_info['normal'];
+		    }else{
+			    $count_normal = 0;
+		    }
+	    }else{
+		    $auth_group_access_info = Db::name('auth_group_access')->where('uid','eq',$this->auth->id)->field('group_id')->select();
+		    $group_ids = array_column($auth_group_access_info,'group_id');
+
+		    $dashboard_config = Db::name('config')->where('name','eq','dashboard_group')->field('value')->find();
+		    $dashboard_group_ids = explode(",", $dashboard_config['value']);
+			if(!array_diff($group_ids, $dashboard_group_ids)){ //规定账号所在的组,都在设定可查看组的列表内
+				$count_custom = Db::name('custom')->count();
+				$device_info = Db::name('device_basics')->field('status')->select();
+				$count_device = count($device_info);
+				$device_status_info = array_column($device_info, 'status');
+				$status_info = array_count_values($device_status_info);
+				$count_normal = $status_info['normal'];
+			}else{
+				$count_custom = 0;
+				$count_device = 0;
+				$count_normal = 0;
+			}
+	    }
+
+	    $this->view->assign([
+            'count_custom'      => $count_custom,
+		    'count_device'      => $count_device,
+		    'count_normal'      => $count_normal,
         ]);
 
         return $this->view->fetch();

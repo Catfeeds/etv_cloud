@@ -124,171 +124,48 @@
 </style>
 <div class="panel panel-default panel-intro">
     <div class="panel-heading">
-        {:build_heading(null, false)}
         <ul class="nav nav-tabs">
             <li class="active"><a href="#one" data-toggle="tab">{:__('Dashboard')}</a></li>
-            <li><a href="#two" data-toggle="tab">{:__('Custom')}</a></li>
         </ul>
     </div>
     <div class="panel-body">
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade active in" id="one">
-
                 <div class="row">
                     <div class="col-sm-3 col-xs-6">
                         <div class="sm-st clearfix">
                             <span class="sm-st-icon st-red"><i class="fa fa-users"></i></span>
                             <div class="sm-st-info">
-                                <span>{$totaluser}</span>
-                                {:__('Total user')}
+                                <span>{$count_custom}</span>
+                                {:__('Total custom')}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-3 col-xs-6">
                         <div class="sm-st clearfix">
-                            <span class="sm-st-icon st-violet"><i class="fa fa-book"></i></span>
+                            <span class="sm-st-icon st-violet"><i class="fa fa-rocket"></i></span>
                             <div class="sm-st-info">
-                                <span>{$totalviews}</span>
-                                {:__('Total view')}
+                                <span>{$count_device}</span>
+                                {:__('Total device')}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-3 col-xs-6">
                         <div class="sm-st clearfix">
-                            <span class="sm-st-icon st-blue"><i class="fa fa-shopping-bag"></i></span>
+                            <span class="sm-st-icon st-blue"><i class="fa fa-arrow-circle-o-up"></i></span>
                             <div class="sm-st-info">
-                                <span>{$totalorder}</span>
-                                {:__('Total order')}
+                                <span>{$count_normal}</span>
+                                {:__('Total normal')}
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-3 col-xs-6">
-                        <div class="sm-st clearfix">
-                            <span class="sm-st-icon st-green"><i class="fa fa-cny"></i></span>
-                            <div class="sm-st-info">
-                                <span>{$totalorderamount}</span>
-                                {:__('Total order amount')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div id="echart" style="height:200px;width:100%;"></div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card sameheight-item stats">
-                            <div class="card-block">
-                                <div class="row row-sm stats-container">
-                                    <div class="col-xs-6 stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-rocket"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$todayusersignup} </div>
-                                            <div class="name"> {:__('Today user signup')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 30%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-shopping-cart"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$todayuserlogin} </div>
-                                            <div class="name"> {:__('Today user login')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6  stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-line-chart"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$todayorder} </div>
-                                            <div class="name"> {:__('Today order')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6  stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-users"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$unsettleorder} </div>
-                                            <div class="name"> {:__('Unsettle order')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6  stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-list-alt"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$sevendnu} </div>
-                                            <div class="name"> {:__('Seven dnu')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 stat-col">
-                                        <div class="stat-icon"> <i class="fa fa-dollar"></i> </div>
-                                        <div class="stat">
-                                            <div class="value"> {$sevendau} </div>
-                                            <div class="name"> {:__('Seven dau')} </div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="two">
-                <div class="row">
-                    <div class="col-xs-12">
-                        {:__('Custom zone')}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script id="newstpl" type="text/html">
-    <ul class="nav nav-stacked">
-        <%for(var i=0;i < news.length;i++){%>
-        <%var item=news[i];%>
-        <li>
-            <a href="<%=item.url%>" target="_blank">
-                <span class="text"><%=item.title%></span>
-            </a>
-        </li>
-        <%}%>
-    </ul>
-</script>
-<script id="discussiontpl" type="text/html">
-    <ul class="products-list product-list-in-box">
-        <%for(var i=0;i < news.length;i++){%>
-        <%var item=news[i];%>
-        <li class="item">
-            <div class="">
-                <a href="<%=item.url%>" target="_blank" class="product-title"><%=item.title%>
-                    <span class="label label-warning pull-right"><%=item.comments_count%></span></a>
-                <span class="product-description">
-                    <%=item.last_time%>
-                </span>
-            </div>
-        </li>
-        <%}%>
-    </ul>
-</script>
 <script>
-    var Orderdata = {
-    column: {:json_encode(array_keys($paylist))},
-            paydata: {:json_encode(array_values($paylist))},
-            createdata: {:json_encode(array_values($createlist))},
-    };
+    setInterval(function () {
+        location.reload();
+    },30000);
 </script>

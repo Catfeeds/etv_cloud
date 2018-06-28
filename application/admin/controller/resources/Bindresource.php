@@ -497,5 +497,42 @@ class Bindresource extends Backend
 		$this->assign("nodeList", $nodeList);
 		return $this->view->fetch('allot');
 	}
+
+	public function time_app_allot($ids=NULL){
+		if(!$ids)
+			$this->error(__('No Results were found'));
+
+		$time_app_custom_list = Db::name('timing_app_custom')->where('time_app_id','eq',$ids)->field('custom_id')->find();
+		if(!empty($time_app_custom_list) && !empty($time_app_custom_list['custom_id'])){
+			$time_app_custom = explode(",", $time_app_custom_list['custom_id']);
+		}else{
+			$time_app_custom = [];
+		}
+
+		if($this->request->isPost()){
+			$params = $this->request->post("row/a");
+			if ($params)
+			{
+				if(!empty($params['custom_ids'])){
+					$identify_result = $this->identify_customid($params);
+					if($identify_result == false){
+						$this->error(__('Parameter error'));
+					}
+				}
+
+				try{
+					Db::name('timing_app_custom')->where('time_app_id','eq',$ids)->update(['custom_id'=>$params['custom_ids']]);
+				}catch (\Exception $e){
+					$this->error(__('Operation failed'));
+				}
+				$this->success();
+			}
+			$this->error(__('Parameter %s can not be empty', ''));
+		}
+
+		$nodeList = Custom::getTreeList($time_app_custom, $this->admin_had_custom);
+		$this->assign("nodeList", $nodeList);
+		return $this->view->fetch('allot');
+	}
 }
 

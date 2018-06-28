@@ -15,12 +15,10 @@ class TimingAppResource extends Model
     // 定义时间戳字段名
     protected $createTime = false;
     protected $updateTime = false;
-    
-    // 追加属性
-    protected $append = [
 
-    ];
-    
+	public function timing_app_setting(){
+		return $this->hasMany('timing_app_setting', 'id', 'id');
+	}
 
     
 

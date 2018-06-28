@@ -16,6 +16,20 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             var table = $("#table");
 
+            //当内容渲染完成后
+            table.on('post-body.bs.table', function (e, settings, json, xhr) {
+                // 分配资源至客户窗口
+                $('.btn-allot').off("click").on("click", function() {
+                    var that = this;
+                    ////循环弹出多个编辑框
+                    $.each(table.bootstrapTable('getSelections'), function (index, row) {
+                        var url = 'resources/bindresource/time_app_allot';
+                        row = $.extend({}, row ? row : {}, {ids: row['id']});
+                        var url = Table.api.replaceurl(url, row, table);
+                        Fast.api.open(url, __('Allot'));
+                    });
+                });
+            });
             // 初始化表格
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,

@@ -6,6 +6,7 @@ use app\admin\model\DeviceBasics;
 use app\common\controller\Backend;
 use app\admin\controller\contentset\Customlist;
 use think\Cache;
+use think\Db;
 
 /**
  * APP定时启动管理
@@ -59,6 +60,7 @@ class Timeappset extends Backend
 		    $list = $this->model
 			    ->where($where)
 			    ->with('custom')
+			    ->with('app')
 			    ->order($sort, $order)
 			    ->limit($offset, $limit)
 			    ->select();
@@ -125,6 +127,20 @@ class Timeappset extends Backend
 		// 获取选项列表
 		$this->get_option();
 
+		//获取APP列表
+		$first_custom_id = $get_custom_list[0]['id'];
+		$bind_app_custom_list = Db::name('timing_app_custom')->where("find_in_set($first_custom_id,custom_id)")->field('time_app_id')->select();
+		if(!empty($bind_app_custom_list)){
+			$app_ids = array_column($bind_app_custom_list, 'time_app_id');
+			$app_resource_list = Db::name('timing_app_resource')->where('id','in',$app_ids)->field('id,title')->select();
+			foreach ($app_resource_list as $key=>$value){
+				$app_list[$value['id']] = $value['title'];
+			}
+		}else{
+			$app_list = [];
+		}
+
+		$this->view->assign('app_list', $app_list);
 		$this->view->assign('custom_list', $custom_list);
 		return $this->view->fetch();
 	}
@@ -211,6 +227,15 @@ class Timeappset extends Backend
 		$this->view->assign('repeat_set_info', $repeat_set_info);
 		$this->view->assign('weekday_info', $weekday_info);
 		$this->view->assign('out_to_info', $out_to_info);
+	}
+
+	public function get_app_list(){
+		$params = $this->request->get();
+		$custom_id = $params['custom_id'];
+		$bind_list = Db::name('timing_app_custom')->where("find_in_set($custom_id, custom_id)")->field('time_app_id')->select();
+		$time_app_ids = array_column($bind_list, 'time_app_id');
+		$time_app_list = Db::name('timing_app_resource')->where('id','in',$time_app_ids)->field('id,title')->select();
+		echo json_encode($time_app_list);
 	}
 
 	/**

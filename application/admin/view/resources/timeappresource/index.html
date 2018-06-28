@@ -10,7 +10,7 @@
                         <a href="javascript:;" class="btn btn-success btn-add {:$auth->check('resources/timeappresource/add')?'':'hide'}" title="{:__('Add')}" ><i class="fa fa-plus"></i> {:__('Add')}</a>
                         <a href="javascript:;" class="btn btn-success btn-edit btn-disabled disabled {:$auth->check('resources/timeappresource/edit')?'':'hide'}" title="{:__('Edit')}" ><i class="fa fa-pencil"></i> {:__('Edit')}</a>
                         <a href="javascript:;" class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('resources/timeappresource/del')?'':'hide'}" title="{:__('Delete')}" ><i class="fa fa-trash"></i> {:__('Delete')}</a>
-
+                        <a href="javascript:;" class="btn btn-primary btn-allot btn-disabled disabled {:$auth->check('resources/bindresource/time_app_allot')?'':'hide'}" title="{:__('Allot')}" ><i class="fa fa-chain"></i> {:__('Allot')}</a>
                     </div>
                     <table id="table" class="table table-striped table-bordered table-hover" 
                            data-operate-edit="{:$auth->check('resources/timeappresource/edit')}" 

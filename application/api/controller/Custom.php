@@ -593,4 +593,25 @@ class Custom extends Api
 		$this->error(__('Invalid parameters'), null, -2);
 	}
 
+	public function time_app_setting() {
+		$device_obj = $this->get_device('id');
+		$custom_obj = $this->get_custom('id');
+		if(!empty($custom_obj) && !empty($device_obj)){
+			$where['custom_id'] = $custom_obj['id'];
+			$where['status'] = 'normal';
+			$mac_id = $device_obj['id'];
+			$field = "ts.title, ts.data_params, ts.repeat_set, ts.weekday, ts.no_repeat_date, ts.start_time, ts.end_time, ts.out_to, tr.title as app_title, tr.classname, tr.packagename";
+			$list = Db::name('timing_app_setting')
+				->alias('ts')
+				->where($where)
+				->where("find_in_set($mac_id,mac_ids)")
+				->join('zxt_timing_app_resource tr','ts.app_id=tr.id','LEFT')
+				->field($field)
+				->select();
+
+			$this->success('Success', $list, 0);
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
 }

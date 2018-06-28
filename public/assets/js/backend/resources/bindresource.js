@@ -23,6 +23,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
         simplead_allot: function () {
             Controller.api.tree_controller();
         },
+        time_app_allot: function() {
+            Controller.api.tree_controller();
+        },
         api: {
             tree_controller: function(){
                 Form.api.bindevent($("form[role=form]"), null, null, function () {

@@ -12,6 +12,7 @@ class TimingAppSetting extends Validate
      */
     protected $rule = [
     	'custom_id'     =>  'require|number',
+	    'app_id'        =>  'require|number',
 	    'title'         =>  'require|max:40',
 	    'data_params'   =>  'max:256',
 	    'repeat_set'    =>  'require|repeat_set_options_judgment',

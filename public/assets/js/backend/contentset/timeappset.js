@@ -24,7 +24,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id'), operate:false},
+                        {field: 'id', title: __('Id'), visible:false},
+                        {field: 'app.title', title:__('App'),operate:false},
                         {field: 'custom.custom_id', title: __('Custom_id')},
                         {field: 'custom.custom_name', title: __('Custom_name')},
                         {field: 'title', title: __('Title'), operate:false},
@@ -63,9 +64,26 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
             action_function: function() {
                 //客户改变
                 $(".custom_id").on("change", function(){
+                    var custom_id = $(this).val();
                     //销毁已有的节点树
                     $("#treeview").jstree("destroy");
                     Controller.api.rendertree_add();
+
+                    //查找客户对应的账号,继而查找定时APP
+                    $.ajax({
+                        url: 'contentset/timeappset/get_app_list',
+                        type: 'get',
+                        dataType: 'json',
+                        data: {'custom_id':custom_id}
+                    }).done(function (data) {
+                        $(".app_id").empty();
+                        var count = data.length;
+                        var html = '';
+                        for (var i=0; i<count; i++){
+                            html += '<option value="'+ data[i]['id'] +'">'+ data[i]['title'] +'</option>>';
+                        }
+                        $(".app_id").append(html);
+                    });
                 });
                 // 重复设置
                 $("input[name='row[repeat_set]']").click(function(){

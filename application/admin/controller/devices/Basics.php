@@ -227,4 +227,69 @@ class Basics extends Backend
 		return $this->view->fetch();
 	}
 
+	public function app_setting($ids = ""){
+
+		if ($this->request->isPost())
+		{
+			$params = $this->request->post();
+			if(empty($params)){
+				$this->success(__('No rows were updated'));
+			}
+
+			if(count($params['id']) != count($params['weigh'])){
+				$this->error(__('Operation failed'));
+			}
+			$count = count($params['id']);
+			for ($i=0; $i<$count; $i++){
+				$data[$params['id'][$i]] = $params['weigh'][$i];
+			}
+			$weigh['weigh'] = json_encode($data);
+			try{
+				Db::name('device_app_setting')->where('id','eq',$ids)->update($weigh);
+			}catch (\Exception $e){
+				Log::write('设备信息,App设置出错,出错原因:'.$e->getMessage());
+				Log::save();
+				$this->error(__('Operation failed'));
+			}
+			$this->success(__('Operation completed'));
+		}
+		if(empty($ids) || !is_numeric($ids))
+			$this->error(__('Invalid parameters'));
+		//设备基础信息
+		$device_info = Db::name('device_basics')->where('id','eq',$ids)->field('custom_id')->find();
+		//查询绑定表
+		$where_bind['custom_id'] = $device_info['custom_id'];
+		$where_bind['mac_ids'] = 'all_mac';
+		$appstore_devices_info = Db::name('appstore_devices')->where($where_bind)->whereOr("find_in_set($ids, mac_ids)")->field('app_id')->select();
+		//绑定表为空
+		if(empty($appstore_devices_info)){
+			Db::name('device_app_setting')->where('id','eq',$ids)->update(['weigh'=>null]);
+			$this->view->assign('list', []);
+			return $this->view->fetch();
+		}
+
+		//app_list
+		$where_appstore['id'] = ['in', array_column($appstore_devices_info, 'app_id')];
+		$where_appstore['status'] = 'normal';
+		$where_appstore['audit_status'] = 'egis';
+		$app_list = Db::name('appstore')->where($where_appstore)->field('id,name,version')->select();
+		//app设置表
+		$app_setting_info = Db::name('device_app_setting')->where('id','eq',$ids)->find();
+
+		//判断排序是否为空
+		if(!empty($app_setting_info) && !empty($app_setting_info['weigh']) ){
+			$weigh_info = json_decode($app_setting_info['weigh'], true);
+			$weigh_ids = array_keys($weigh_info);  //排序APPid
+			foreach ($app_list as $key=>&$value){
+				$value['weigh'] = in_array($value['id'], $weigh_ids)? $weigh_info[$value['id']] :100;
+			}
+		}else{
+			foreach ($app_list as $key=>&$value){
+				$value['weigh'] = 100;
+			}
+		}
+		$this->view->assign('list', $app_list);
+		return $this->view->fetch();
+	}
+
 }

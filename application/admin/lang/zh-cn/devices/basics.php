@@ -49,6 +49,8 @@ return [
 	'Itv_version'           =>  'IPTV版本',
 	'Route_firmware_version'=>  '路由固件',
 	'Vlan_number'           =>  'VLAN号',
-	'Boot_time'             =>  '开机时间'
+	'Boot_time'             =>  '开机时间',
+	'App setting'           =>  'App设置',
+	'Apps setting tips'     =>  '设置设备绑定的APP信息',
 
 ];

@@ -35,7 +35,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                         {field: 'icon', title: __('Icon'), formatter: Controller.api.formatter.icon_url, operate:false},
                         {field: 'push_all', title: __('Push all'), operate:false, formatter: Controller.api.formatter.push_test},
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
-                        {field: 'audit_status', title: __('Audit_status'), visible:false, formatter: Controller.api.formatter.audit_status_text, operate:false},
+                        {field: 'audit_status', title: __('Audit_status'), formatter: Controller.api.formatter.audit_status_text, operate:false},
                     ]
                 ],
                 search:false,

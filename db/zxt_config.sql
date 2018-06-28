@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-06-14 11:57:30
+Date: 2018-06-27 16:02:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -57,6 +57,7 @@ INSERT INTO `zxt_config` VALUES ('17', 'mail_from', 'email', 'Mail from', '', 's
 INSERT INTO `zxt_config` VALUES ('18', 'resource_column', 'account_management', 'Column admin manage', '请填写账号ID作为键名,填写需分配的客户ID作为键值,多个客户ID用逗号分隔,尽可能配置少的客户ID,不支持*号查询全部客户', 'array', '{\"1\":\"1,2,3,4,5\",\"2\":\"2,3,4\"}', ' ', '', '');
 INSERT INTO `zxt_config` VALUES ('19', 'resource_attachment', 'account_management', 'Attachment admin manage', '请填写账号ID作为键名,填写需查看客户的ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代', 'array', '{\"2\":\"*\"}', ' ', '', '');
 INSERT INTO `zxt_config` VALUES ('20', 'resource_allot', 'account_management', 'Allot admin manage', '请填写账号ID作为键名,填写需分配的客户ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代', 'array', '{\"2\":\"1,2,3,4,5\"}\r\n', ' ', '', '');
-INSERT INTO `zxt_config` VALUES ('21', 'content_set', 'account_management', 'Content setting', '请填写账号ID作为键名,填写需查看内容设置的客户ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代; PS:不包括内容设置中的栏目模块', 'array', '{\"2\":\"*\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('21', 'content_set', 'account_management', 'Content setting', '请填写账号ID作为键名,填写需查看内容设置的客户ID作为键值,多个客户ID用逗号分隔,全部客户用*号替代; PS:不包括内容设置中的栏目模块', 'array', '{\"1\":\"1,2.3,4,5\"}', ' ', '', '');
 INSERT INTO `zxt_config` VALUES ('22', 'content_set_column', 'account_management', 'Content column setting', '请填写账号ID作为键名,填写需查看栏目设置中客户ID作为键值,多个客户ID用逗号分隔,暂不支持*号查看所有客户;', 'array', '{\"2\":\"1,2,3,4\"}', ' ', '', '');
 INSERT INTO `zxt_config` VALUES ('23', 'device_manage', 'account_management', 'Devices manage', '请填写账号ID作为键名,填写需查看客户ID作为键值,多个客户ID用逗号分隔,查看所有客户用*号代替;', 'array', '{\"2\":\"*\"}', ' ', '', '');
+INSERT INTO `zxt_config` VALUES ('24', 'dashboard_group', 'account_management', 'Dashboard group', '请填写可在控制台查看所有客户及其设备数据的组别ID,多个组别ID用逗号隔开', 'string', '1,2', ' ', 'required', '');

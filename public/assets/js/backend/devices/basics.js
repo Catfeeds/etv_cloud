@@ -11,7 +11,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     del_url: 'devices/basics/del',
                     multi_url: 'devices/basics/multi',
                     order_url: 'devices/basics/order',
-                    table: 'device_basics',
+                    app_setting_url: 'devices/basics/app_setting',
+                    table: 'device_basics'
                 }
             });
 
@@ -81,11 +82,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 });
             });
 
+            //App设置
+            $(document.body).on("click", ".btn-app_setting ", function () {
+                var options = table.bootstrapTable('getOptions');
+                var app_setting_url = options.extend.app_setting_url;
+                $.each(table.bootstrapTable('getSelections'), function (index, row) {
+                    var url = app_setting_url + '/ids/' + row['id']
+                    Fast.api.open(url, __('App setting'));
+                });
+            });
         },
         add: function () {
             Controller.api.bindevent();
         },
         edit: function () {
+            Controller.api.bindevent();
+        },
+        app_setting: function () {
             Controller.api.bindevent();
         },
         api: {

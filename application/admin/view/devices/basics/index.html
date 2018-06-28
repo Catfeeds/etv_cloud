@@ -19,6 +19,7 @@
                                 <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
                             </ul>
                         </div>
+                        <a href="javascript:;" class="btn btn-primary btn-app_setting btn-disabled disabled {:$auth->check('devices/basics/app_setting')?'':'hide'}" title="{:__('Apps setting tips')}" ><i class="fa fa-rocket"></i> {:__('App setting')}</a>
                         <div class="dropdown btn-group {:$auth->check('devices/basics/order')?'':'hide'}">
                             <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
                             <ul class="dropdown-menu text-left" role="menu">

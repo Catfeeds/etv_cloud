@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-06-13 16:14:40
+Date: 2018-06-28 10:05:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,7 +25,8 @@ CREATE TABLE `zxt_appstore_devices` (
   `custom_id` int(11) NOT NULL,
   `mac_ids` text NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `appid_customid` (`app_id`,`custom_id`) USING BTREE
+  UNIQUE KEY `appid_customid` (`app_id`,`custom_id`) USING BTREE,
+  KEY `custom_id` (`custom_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

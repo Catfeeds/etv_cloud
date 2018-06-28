@@ -1,0 +1,36 @@
+<form id="app_setting-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="col-xs-2 col-sm-2"></div>
+    <div class="col-xs-8 col-sm-8">
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th width="40%">{:__('Name')}</th>
+            <th width="45%">{:__('Version')}</th>
+            <th width="15%">{:__('Weigh')}</th>
+        </tr>
+        </thead>
+        <tbody>
+            {foreach $list as $item}
+            <tr>
+                <td>{$item.name}</td>
+                <td>{$item.version}</td>
+                <td>
+                    <input type="hidden" name="id[]" value="{$item.id}">
+                    <input type="text" name="weigh[]" value="{$item.weigh}">
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    </div>
+    <div class="col-xs-2 col-sm-2"></div>
+
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

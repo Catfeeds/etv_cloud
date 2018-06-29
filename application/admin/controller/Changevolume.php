@@ -33,12 +33,12 @@ class Changevolume extends Backend
 		}
 		try{
 			Db::name('admin_capacity')->where($where)->setInc('used_capacity', $volumn);
-			return true;
-		}catch(Exception $e){
+		}catch(\Exception $e){
 			Log::write('新增使用容量出错,amdin_id:'.$id);
 			Log::save();
 			return false;
 		}
+		return true;
 	}
 
 	public function dec_capacity($id=0, $volumn=0){

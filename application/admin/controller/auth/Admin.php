@@ -7,6 +7,8 @@ use app\admin\model\AuthGroupAccess;
 use app\common\controller\Backend;
 use fast\Random;
 use fast\Tree;
+use think\Db;
+use think\Exception;
 use think\Loader;
 
 /**
@@ -165,6 +167,11 @@ class Admin extends Backend
                         $dataset[] = ['uid' => $this->model->id, 'group_id' => $value];
                     }
                     model('AuthGroupAccess')->saveAll($dataset);
+
+                    //添加容量
+	                $data_volumn['admin_id'] = $this->model->id;
+	                $data_volumn['application_capacity'] = $params['volumn'];
+	                Db::name('admin_capacity')->insert($data_volumn);
                 }
                 catch (\think\exception\PDOException $e)
                 {
@@ -250,8 +257,10 @@ class Admin extends Backend
         {
             $groupids[] = $v['id'];
         }
+        $volumn_list = Db::name('admin_capacity')->where('admin_id','eq',$ids)->field('application_capacity')->find();
         $this->view->assign("row", $row);
         $this->view->assign("groupids", $groupids);
+        $this->view->assign("volumn",$volumn_list['application_capacity']);
         return $this->view->fetch();
     }
 
@@ -277,8 +286,16 @@ class Admin extends Backend
                 $deleteIds = array_diff($deleteIds, [$this->auth->id]);
                 if ($deleteIds)
                 {
-                    $this->model->destroy($deleteIds);
-                    model('AuthGroupAccess')->where('uid', 'in', $deleteIds)->delete();
+                	Db::startTrans();
+                	try{
+		                $this->model->destroy($deleteIds);
+		                model('AuthGroupAccess')->where('uid', 'in', $deleteIds)->delete();
+		                Db::name('admin_capacity')->where('admin_id','in',$deleteIds)->delete();
+	                }catch (\Exception $e){
+						Db::rollback();
+						$this->error();
+	                }
+	                Db::commit();
                     $this->success();
                 }
             }

@@ -258,9 +258,9 @@ return [
     //FastAdmin配置
     'fastadmin'              => [
         //是否开启前台会员中心
-        'usercenter'          => true,
+        'usercenter'          => false,
         //登录验证码
-        'login_captcha'       => false,
+        'login_captcha'       => true,
         //登录失败超过一定次数则1天后重试
         'login_failure_retry' => true,
         //登录失败次数上限制

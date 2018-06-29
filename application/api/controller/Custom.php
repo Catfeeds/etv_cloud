@@ -11,7 +11,6 @@ use app\common\controller\Api;
 use think\Cache;
 use think\Config;
 use think\Db;
-use think\Exception;
 use think\exception\PDOException;
 use think\Log;
 
@@ -593,6 +592,10 @@ class Custom extends Api
 		$this->error(__('Invalid parameters'), null, -2);
 	}
 
+	/**
+	 * @获取定时APP设置
+	 * @param custom_id 客户编号
+	 */
 	public function time_app_setting() {
 		$device_obj = $this->get_device('id');
 		$custom_obj = $this->get_custom('id');

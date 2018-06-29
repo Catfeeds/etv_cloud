@@ -213,13 +213,14 @@ class Ajax extends Backend
                 ['id'=>$admin_id, 'volumn'=>round($fileInfo['size']/(1024*1024),3)]
             );
             if(!$add_result){
+	            Db::rollback();
                 $this->error(__('Update volumn fail'));
             }
             $attachment = model("attachment");
             $attachment->data(array_filter($params));
             try{
 	            $attachment->save();
-            }catch(Exception $e){
+            }catch(\Exception $e){
 	            $attachmentFile = ROOT_PATH . '/public' . $uploadDir . $splInfo->getSaveName();
 	            if (is_file($attachmentFile))
 	            {

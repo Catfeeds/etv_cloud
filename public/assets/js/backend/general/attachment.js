@@ -22,19 +22,21 @@ define(['jquery', 'bootstrap', 'backend', 'form', 'table'], function ($, undefin
                 sortName: 'id',
                 columns: [
                     [
-                        {field: 'state', checkbox: true, },
-                        {field: 'id', title: __('Id')},
+                        {field: 'state', checkbox: true, operate:false},
+                        {field: 'id', title: __('Id'), operate:false},
                         {field: 'title', title: __('Title')},
-                        {field: 'url', title: __('Preview'), formatter: Controller.api.formatter.thumb},
-                        {field: 'url', title: __('Url'), formatter: Controller.api.formatter.url},
-                        {field: 'imagewidth', title: __('Imagewidth')},
-                        {field: 'imageheight', title: __('Imageheight')},
-                        {field: 'imagetype', title: __('Imagetype')},
-                        {field: 'filesize', title: __('Filesize')},
-                        {field: 'mimetype', title: __('Mimetype')},
-                        {field: 'createtime', title: __('Createtime'), formatter: Table.api.formatter.datetime},
+                        {field: 'url', title: __('Preview'), formatter: Controller.api.formatter.thumb, operate:false},
+                        {field: 'url', title: __('Url'), formatter: Controller.api.formatter.url, operate:false},
+                        {field: 'imagewidth', title: __('Imagewidth'), operate:false},
+                        {field: 'imageheight', title: __('Imageheight'), operate:false},
+                        {field: 'imagetype', title: __('Imagetype'), operate:false},
+                        {field: 'filesize', title: __('Filesize'), operate:false},
+                        {field: 'mimetype', title: __('Mimetype'), operate:false},
+                        {field: 'createtime', title: __('Createtime'), formatter: Table.api.formatter.datetime, operate:false},
                     ]
                 ],
+                showToggle:false,
+                showExport: false,
             });
 
             // 为表格绑定事件

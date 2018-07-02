@@ -140,6 +140,45 @@ class Basics extends Backend
 		return $this->view->fetch();
 	}
 
+	public function edit($ids = NULL)
+	{
+		$row = Db::name('device_basics')->where('id','eq',$ids)->find();
+		if (!$row)
+			$this->error(__('No Results were found'));
+		if ($this->request->isPost())
+		{
+			$params = $this->request->post("row/a");
+			if ($params)
+			{
+				try
+				{
+					$validate_result = $this->validate($params,'DeviceBasics.edit');
+					if(true !== $validate_result){
+						$this->error($validate_result);
+					}
+
+					$result = Db::name('device_basics')->where('id','eq',$ids)->update($params);
+					if ($result !== false)
+					{
+						$this->success();
+					}
+					else
+					{
+						$this->error($row->getError());
+					}
+				}
+				catch (\think\exception\PDOException $e)
+				{
+					$this->error($e->getMessage());
+				}
+			}
+			$this->error(__('Parameter %s can not be empty', ''));
+		}
+
+		$this->view->assign("row", $row);
+		return $this->view->fetch();
+	}
+
 	/**
 	 * 批量更新
 	 */
@@ -198,6 +237,27 @@ class Basics extends Backend
 		}
 		$this->view->assign('row', $row);
 		return $this->view->fetch();
+	}
+
+	/**
+	 * 删除
+	 */
+	public function del($ids = "")
+	{
+		$obj = Db::name('device_basics')->where('id','eq',$ids)->field('mac')->find();
+		$where_basics['id'] = $ids;
+		$where_detail['mac'] = $obj['mac'];
+		Db::startTrans();
+		try{
+			Db::name('device_basics')->where($where_basics)->delete();
+			Db::name('device_detail')->where($where_detail)->delete();
+		}catch (\Exception $e){
+			Log::write('删除设备出错,错误信息如下:'.$e->getMessage());
+			Log::save();
+			Db::rollback();
+		}
+		Db::commit();
+		$this->success();
 	}
 
 	/**

@@ -11,6 +11,7 @@ use app\common\controller\Api;
 use think\Cache;
 use think\Config;
 use think\Db;
+use think\Debug;
 use think\exception\PDOException;
 use think\Log;
 
@@ -20,8 +21,7 @@ class Custom extends Api
 	protected $noNeedLogin = ['*'];
 
 	protected $beforeActionList = [
-		//无值的话为当前控制器下所有方法的前置方法
-		'check_params',
+		'check_params'      =>  ['except'=>'custom_list']
 	];
 
 	/**
@@ -615,6 +615,52 @@ class Custom extends Api
 			$this->success('Success', $list, 0);
 		}
 		$this->error(__('Invalid parameters'), null, -2);
+	}
+
+	/**
+	 * 获取客户列表
+	 * @header custom_token value->zxt_custom_token
+	 * @param custom_type
+	 * @param offset
+	 * @param rows
+	 */
+	public function custom_list() {
+		$header_info = $this->request->header();
+		if(!isset($header_info['custom_token']) || 'zxt_custom_token' != $header_info['custom_token']){
+			$this->error(__('Parameter error'), [], -1);
+		}
+		$params = $this->request->get();
+		$where = [];
+		if(isset($params['custom_type'])){
+			$where['custom_type'] = $params['custom_type'];
+		}
+		if(isset($params['status'])){
+			$where['status'] = $params['status'];
+		}
+		$offset = isset($params['offset'])? $params['offset'] -1: 0;
+		$rows = isset($params['rows'])? $params['rows']: 10;
+
+		$field = 'custom_id, status, custom_name, full_name, custom_type, handler, phone';
+		$list = Db::name('custom')->where($where)->field($field)->limit($offset, $rows)->select();
+		$this->success('Success', $list, 0);
+	}
+
+	/**
+	 * @获取客户信息
+	 * @param custom_id 客户编号
+	 * @mac Mac编号
+	 */
+	public function confirm_custom(){
+		$params = $this->request->get();
+		$where['c.custom_id'] = $params['custom_id'];
+		$field = 'c.id, c.custom_id, c.status, c.custom_name, c.full_name, c.custom_type, c.handler, c.phone, zxt_area.mergename as area_name, c.detail_address, c.lng, c.lat';
+		$obj = Db::name('custom')
+			->alias('c')
+			->where($where)
+			->join('zxt_area','zxt_custom.area_id=zxt_area.id')
+			->field($field)
+			->find();
+		$this->success('Success', $obj, 0);
 	}
 
 }

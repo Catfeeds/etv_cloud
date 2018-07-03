@@ -55,7 +55,7 @@ class Common extends Backend
 			$query_basics->where($where_basics);
 		}
 		if(!empty($mac_list)){
-			$where_basics['mac'] = ['in', $mac_list];
+			$where_basics['id'] = ['in', $mac_list];
 			$query_basics->whereOr($where_basics);
 		}
 		if(empty($where_basics))

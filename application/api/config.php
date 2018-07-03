@@ -16,5 +16,7 @@ return [
 		'resource'  =>  60,
 		'popup'     =>  60,
 
+		'device_order'      =>  30,
+
 	],
 ];

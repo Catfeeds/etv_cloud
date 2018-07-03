@@ -95,4 +95,6 @@ return [
 	'No egis'                                               => '审核不通过',
 	'Release'                                               => '通过发布',
 	'No release'                                            => '未发布',
+	'Parameter error'                                       =>  '参数错误',
+	'Parameter hidden'                                      =>  '参数不可用',
 ];

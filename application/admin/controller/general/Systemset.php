@@ -247,7 +247,7 @@ class Systemset extends Backend
 				//需要删除数据
 				$del_where = NULL;
 				if(!empty($pass_data)){
-					$del_data = array_diff(array_column($pass_data, 'custom_id'), array_column($add_data, 'custom_id'));
+					$del_data = array_values(array_diff(array_column($pass_data, 'custom_id'), array_column($add_data, 'custom_id')));
 					if(!empty($del_data)){
 						$del_where['custom_id'] = ['in', $del_data];
 					}
@@ -337,6 +337,7 @@ class Systemset extends Backend
 				if(!empty($open_custom_id)){
 					if (in_array($value['id'], $open_custom_id)){
 						$state['undetermined'] = true;
+						$state['opened'] = true;
 					}
 				}
 				$return_data[$key]['state'] = $state;

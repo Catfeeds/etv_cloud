@@ -287,6 +287,10 @@ class Basics extends Backend
 		return $this->view->fetch();
 	}
 
+	/**
+	 * APP设置
+	 * @param string $ids MAC列表编号
+	 */
 	public function app_setting($ids = ""){
 
 		if ($this->request->isPost())
@@ -313,14 +317,16 @@ class Basics extends Backend
 			}
 			$this->success(__('Operation completed'));
 		}
+
 		if(empty($ids) || !is_numeric($ids))
 			$this->error(__('Invalid parameters'));
 		//设备基础信息
 		$device_info = Db::name('device_basics')->where('id','eq',$ids)->field('custom_id')->find();
 		//查询绑定表
-		$where_bind['custom_id'] = $device_info['custom_id'];
-		$where_bind['mac_ids'] = 'all_mac';
-		$appstore_devices_info = Db::name('appstore_devices')->where($where_bind)->whereOr("find_in_set($ids, mac_ids)")->field('app_id')->select();
+		$appstore_devices_info = Db::name('appstore_devices')->where('custom_id','eq',$device_info['custom_id'])
+																	->where("find_in_set($ids, mac_ids) or mac_ids='all_mac'")
+																	->field('app_id')
+																	->select();
 		//绑定表为空
 		if(empty($appstore_devices_info)){
 			Db::name('device_app_setting')->where('id','eq',$ids)->update(['weigh'=>null]);
@@ -348,6 +354,20 @@ class Basics extends Backend
 				$value['weigh'] = 100;
 			}
 		}
+
+		//判断安装情况
+		if (!empty($app_setting_info) && !empty($app_setting_info['install']) ){
+			$install_info = json_decode($app_setting_info['install'], true);
+			$install_ids = array_keys($install_info); //安装APPid
+			foreach ($app_list as $key=>&$value){
+				$value['install'] = in_array($value['id'], $install_ids)? $install_info[$value['id']] :'not installed';
+			}
+		}else{
+			foreach ($app_list as $key=>&$value){
+				$value['install'] = 'not installed';
+			}
+		}
+
 		$this->view->assign('list', $app_list);
 		return $this->view->fetch();
 	}

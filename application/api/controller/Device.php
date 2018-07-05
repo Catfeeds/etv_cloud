@@ -20,7 +20,7 @@ class Device extends Api
 	protected $noNeedLogin = ['*'];
 
 	protected $beforeActionList = [
-		'check_params'      =>  ['only'=>'device_order,system_info']
+		'check_params'      =>  ['only'=>'device_order,system_info,appstore_info,online_heart']
 	];
 
 	/**
@@ -101,6 +101,7 @@ class Device extends Api
 			try{
 				$basics_obj = Db::name('device_basics')->where('mac', 'eq', $params['mac'])->find();
 				$detail_obj = Db::name('device_detail')->where('mac','eq',$params['mac'])->find();
+				$para_log_obj = Db::name('device_para_log')->where('mac','eq',$params['mac'])->order('runtime desc')->find();
 				if(!empty($basics_obj)){
 					Db::name('device_basics')->where('mac','eq',$params['mac'])->update($data_basics);
 				}else{
@@ -112,11 +113,20 @@ class Device extends Api
 				}else{
 					Db::name('device_detail')->insert($data_detail);
 				}
+				if(!empty($para_log_obj)){
+					$para_data['before_info'] = $para_log_obj['after_info'];
+				}else{
+					$para_data['before_info'] = '';
+				}
+				$para_data['mac'] = $params['mac'];
+				$para_data['runtime'] = time();
+				$para_data['after_info'] = json_encode($params);
+				Db::name('device_para_log')->insert($para_data);
 			}catch (\Exception $e){
 				Db::rollback();
 				Log::write('设备信息上传出错,错误信息如下:'.$e->getMessage());
 				Log::save();
-				$this->error('',null,-5);
+				$this->error('设备信息上传出错',null,-5);
 			}
 			Db::commit();
 			$this->success('Success',null,0);
@@ -243,6 +253,14 @@ class Device extends Api
 		$this->success('Success', $system_obj,0);
 	}
 
+	/**
+	 * 上传系统升级结果
+	 * @param custom_id 客户编号
+	 * @param mac Mac编号
+	 * @param pass_utc 旧utc号
+	 * @param current_utc 升级后utc号
+	 * @param version 版本号
+	 */
 	public function system_upgrade_result(){
 		$params = $this->request->post();
 		if(!isset($params['custom_id']) || !isset($params['mac']) || !isset($params['pass_utc']) || !isset($params['current_utc']) || !isset($params['version'])){
@@ -256,17 +274,164 @@ class Device extends Api
 
 		$params['custom_id'] = $custom_obj['id'];
 		$params['mac_id'] = $device_obj['id'];
+		$params['room'] = isset($params['room'])? $params['room']: '-';
+		$params['message'] = isset($params['message'])? $params['message']: '-';
 		$params['login_ip'] = $this->request->ip();
 		$params['runtime'] = time();
 		unset($params['mac']);
 
 		try{
-			Db::name('upgrade_system_log')->strict(true)->insert($params);
+			Db::name('upgrade_system_log')->field('custom_id, mac_id, pass_utc, current_utc, version, room, message, runtime, login_ip')->insert($params);
 		}catch (\Exception $e){
 			Log::write("系统升级结果上报出错,错误信息如下:".$e->getMessage());
 			Log::save();
 			$this->error('上传指令结果出错', null, -5);
 		}
 		$this->success('Success', null,0);
+	}
+
+	/**
+	 * 获取APPSTORE信息
+	 * @param custom_id 客户编号
+	 * @param mac MAC编号
+	 */
+	public function appstore_info() {
+		$custom_id = $this->request->get('custom_id');
+		$mac = $this->request->get('mac');
+		$custom_obj = Db::name('custom')->where('custom_id','eq',$custom_id)->field('id')->find();
+		$device_obj = Db::name('device_basics')->where('mac','eq',$mac)->field('id')->find();
+		if(empty($custom_obj) || empty($device_obj)){
+			$this->error(__('Invalid parameters'), null, -2);
+		}
+		$device_id = $device_obj['id'];
+		// 获取绑定表APPid
+		$appstore_devices_info = Db::name('appstore_devices')->where('custom_id','eq',$custom_obj['id'])
+									->where("find_in_set($device_id, mac_ids) or mac_ids='all_mac'")
+									->field('app_id')
+									->select();
+
+		//全部推送APP包括 绑定表APPid和push_all为true的APP
+		if(empty($appstore_devices_info)){
+			$where_and = "push_all = 'true'";
+		}else{
+			$app_device_ids =  implode(",", array_column($appstore_devices_info,'app_id'));
+			$where_and = "id in ($app_device_ids) or push_all = 'true' ";
+		}
+		$where['status'] = 'normal';
+		$where['audit_status'] = 'egis';
+		$field = "id, type, name, version, package, filepath, sha1, icon";
+		$appstore_info = Db::name('appstore')->where($where)->where($where_and)->field($field)->select();
+
+		if(!empty($appstore_info)){
+			//获取排序设置和安装情况并赋值
+			$app_setting_obj = Db::name('device_app_setting')->where('id','in',$device_id)->find();
+			if(!empty($app_setting_obj)){
+				$weigh = !empty($app_setting_obj)? json_decode($app_setting_obj['weigh'], true): [];
+				$install = !empty($app_setting_obj)? json_decode($app_setting_obj['install'], true): [];
+				foreach ($appstore_info as $key=>&$value){
+					$value['weigh'] = isset($weigh[$value['id']])? $weigh[$value['id']]: 100;
+					$value['install'] = isset($install[$value['id']])? $install[$value['id']]: 'not installed';
+				}
+			}else{
+				foreach ($appstore_info as $key=>&$value){
+					$value['weigh'] = $key+1;
+					$value['install'] = 'not installed';
+				}
+			}
+			$this->success('Success',$appstore_info,0);
+		}else{
+			$this->success('Success',null,0);
+		}
+	}
+
+	/**
+	 * 上传AppStore安装结果
+	 * @param mac MAC编号
+	 * @param version APP版本号(唯一)
+	 * @installed_result 安装结果
+	 */
+	public function appstore_installed_result(){
+		$params = $this->request->post();
+		if(!isset($params['mac']) || !isset($params['version']) || !isset($params['installed_result']))
+			$this->error(__('Parameter error'), [], -1);
+
+		$installed_result = ['not installed', 'installed', 'delete'];
+		if(!in_array($params['installed_result'], $installed_result))
+			$this->error(__('Parameter error'), [], -1);
+
+		$device_obj = Db::name('device_basics')->where('mac','eq',$params['mac'])->field('id')->find();
+		$appstore_obj = Db::name('appstore')->where('version','eq',$params['version'])->field('id')->find();
+		if(empty($device_obj) || empty($appstore_obj))
+			$this->error(__('Invalid parameters'), null, -2);
+
+		$setting_obj = Db::name('device_app_setting')->where('id','eq',$device_obj['id'])->find();
+		if (!empty($setting_obj) || !empty($setting_obj['install'])){
+			$install = json_decode($setting_obj['install'],true);
+			if(isset($install[$appstore_obj['id']])){
+				$install[$appstore_obj['id']] = $params['installed_result'];
+				$insert_data['install'] = json_encode($install);
+			}else{
+				$insert_data['install'] = json_encode([$appstore_obj['id']=>$params['installed_result']]);
+			}
+		}
+		$insert_data['weigh'] = isset($setting_obj['weigh'])? $setting_obj['weigh']: '';
+		$insert_data['id'] = $device_obj['id'];
+		try{
+			Db::name('device_app_setting')->insert($insert_data,true);
+		}catch (\Exception $e){
+			Log::write('App安装上传接口出错,错误信息如下:'.$e->getMessage());
+			Log::save();
+			$this->error('上传App安装结果出错',null,-5);
+		}
+		$this->success('Success',null,0);
+	}
+
+	/**
+	 * 更新在线状态
+	 * @param mac MAC编号
+	 * @param custom_id 客户编号
+	 */
+	public function online_heart(){
+		$mac = $this->request->get('mac');
+		$device_obj = Db::name('device_basics')->where('mac','eq',$mac)->field('id')->find();
+		if(!empty($device_obj)){
+			$update_data['last_visit_time'] = time();
+			$update_data['last_visit_ip'] = $this->request->ip();
+			try{
+				Db::name('device_basics')->where('id','eq',$device_obj['id'])->update($update_data);
+			}catch (\Exception $e){
+				Log::write("更新在线状态接口出错,错误信息如下:".$e->getMessage());
+				Log::save();
+				$this->error('更新在线状态出错',null,-5);
+			}
+			$this->success('Success',null,0);
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
+	/**
+	 * 上传错误信息
+	 */
+	public function error_info() {
+		$params = $this->request->post();
+		if(!isset($params['mac']) || !isset($params['error_type']) || !isset($params['error_name']) || !isset($params['error_message'])){
+			$this->error(__('Parameter error'), [], -1);
+		}
+
+		$device_obj = Db::name('device_basics')->where('mac','eq',$params['mac'])->field('id')->find();
+		if(!empty($device_obj)){
+			$field = 'mac,error_time,error_type,error_name,error_message,error_stack,agent,mode,referer';
+			$params['error_time'] = time();
+			try{
+				Db::name('error_log')->field($field)->insert($params);
+			}catch (\Exception $e){
+				Log::write("上传错误信息接口出错,错误如下:".$e->getMessage());
+				Log::save();
+				$this->error('设备信息上传出错',null,-5);
+			}
+			$this->success('Success',null,0);
+		}
+
+
 	}
 }

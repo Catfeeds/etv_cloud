@@ -52,5 +52,9 @@ return [
 	'Boot_time'             =>  '开机时间',
 	'App setting'           =>  'App设置',
 	'Apps setting tips'     =>  '设置设备绑定的APP信息',
+	'Installation situation'=>  '安装情况',
+	'Not installed'         =>  '未安装',
+	'Installed'             =>  '已安装',
+	'Delete'                =>  '已删除'
 
 ];

@@ -75,4 +75,8 @@ class Custom extends Model
 		return $this->hasMany('timing_app_setting', 'id', 'id');
 	}
 
+	public function upgrade_system_log(){
+		return $this->hasMany('upgrade_system_log', 'id', 'id');
+	}
+
 }

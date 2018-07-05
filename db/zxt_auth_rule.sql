@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-06-28 18:25:13
+Date: 2018-07-05 18:36:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -37,7 +37,7 @@ CREATE TABLE `zxt_auth_rule` (
   UNIQUE KEY `name` (`name`) USING BTREE,
   KEY `pid` (`pid`),
   KEY `weigh` (`weigh`)
-) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='节点表';
+) ENGINE=InnoDB AUTO_INCREMENT=360 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='节点表';
 
 -- ----------------------------
 -- Records of zxt_auth_rule
@@ -286,3 +286,28 @@ INSERT INTO `zxt_auth_rule` VALUES ('330', 'file', '326', 'customcontro/bindcust
 INSERT INTO `zxt_auth_rule` VALUES ('332', 'file', '326', 'customcontro/bindcustom/bind', '绑定', 'fa fa-circle-o', '', '', '0', '1529043655', '1529043655', '0', 'normal');
 INSERT INTO `zxt_auth_rule` VALUES ('333', 'file', '256', 'devices/basics/app_setting', 'APP设置', 'fa fa-circle-o', '', '', '0', '1530149109', '1530149109', '0', 'normal');
 INSERT INTO `zxt_auth_rule` VALUES ('334', 'file', '286', 'resources/bindresource/time_app_allot', '分配', 'fa fa-circle-o', '', '', '0', '1530177964', '1530177964', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('335', 'file', '0', 'logs', '日志管理', 'fa fa-list', '', '', '1', '1530761867', '1530772831', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('336', 'file', '335', 'logs/devicevisitlog', 'Devicevisitlog', 'fa fa-circle-o\r', '', '', '1', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('337', 'file', '336', 'logs/devicevisitlog/index', '查看', 'fa fa-circle-o', '', '', '0', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('338', 'file', '336', 'logs/devicevisitlog/add', '添加', 'fa fa-circle-o', '', '', '0', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('339', 'file', '336', 'logs/devicevisitlog/edit', '编辑', 'fa fa-circle-o', '', '', '0', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('340', 'file', '336', 'logs/devicevisitlog/del', '删除', 'fa fa-circle-o', '', '', '0', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('341', 'file', '336', 'logs/devicevisitlog/multi', '批量更新', 'fa fa-circle-o', '', '', '0', '1530761867', '1530761867', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('342', 'file', '335', 'logs/upgradesystemlog', '设备升级日志管理', 'fa fa-circle-o', '', '', '1', '1530762496', '1530786845', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('343', 'file', '342', 'logs/upgradesystemlog/index', '查看', 'fa fa-circle-o', '', '', '0', '1530762496', '1530762496', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('344', 'file', '342', 'logs/upgradesystemlog/add', '添加', 'fa fa-circle-o', '', '', '0', '1530762496', '1530762496', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('345', 'file', '342', 'logs/upgradesystemlog/edit', '编辑', 'fa fa-circle-o', '', '', '0', '1530762496', '1530762496', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('346', 'file', '342', 'logs/upgradesystemlog/del', '删除', 'fa fa-circle-o', '', '', '0', '1530762496', '1530762496', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('347', 'file', '342', 'logs/upgradesystemlog/multi', '批量更新', 'fa fa-circle-o', '', '', '0', '1530762496', '1530762496', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('348', 'file', '335', 'logs/deviceparalog', '设备参数日志管理', 'fa fa-circle-o', '', '', '1', '1530762806', '1530772875', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('349', 'file', '348', 'logs/deviceparalog/index', '查看', 'fa fa-circle-o', '', '', '0', '1530762806', '1530762806', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('350', 'file', '348', 'logs/deviceparalog/add', '添加', 'fa fa-circle-o', '', '', '0', '1530762806', '1530762806', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('351', 'file', '348', 'logs/deviceparalog/edit', '编辑', 'fa fa-circle-o', '', '', '0', '1530762806', '1530762806', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('352', 'file', '348', 'logs/deviceparalog/del', '删除', 'fa fa-circle-o', '', '', '0', '1530762806', '1530762806', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('353', 'file', '348', 'logs/deviceparalog/multi', '批量更新', 'fa fa-circle-o', '', '', '0', '1530762806', '1530762806', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('354', 'file', '335', 'logs/errorlog', '设备错误日志管理', 'fa fa-circle-o\r', '', '', '1', '1530762968', '1530762968', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('355', 'file', '354', 'logs/errorlog/index', '查看', 'fa fa-circle-o', '', '', '0', '1530762969', '1530762969', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('356', 'file', '354', 'logs/errorlog/add', '添加', 'fa fa-circle-o', '', '', '0', '1530762969', '1530762969', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('357', 'file', '354', 'logs/errorlog/edit', '编辑', 'fa fa-circle-o', '', '', '0', '1530762969', '1530762969', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('358', 'file', '354', 'logs/errorlog/del', '删除', 'fa fa-circle-o', '', '', '0', '1530762969', '1530762969', '0', 'normal');
+INSERT INTO `zxt_auth_rule` VALUES ('359', 'file', '354', 'logs/errorlog/multi', '批量更新', 'fa fa-circle-o', '', '', '0', '1530762969', '1530762969', '0', 'normal');

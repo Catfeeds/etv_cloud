@@ -27,7 +27,11 @@ class DeviceBasics extends Model
 	}
 
 	public function device_sleep(){
-		return $this->hasMany('device_sleep', 'mac', 'mac');
+		return $this->hasOne('device_sleep', 'mac', 'mac');
+	}
+
+	public function upgrade_system_log() {
+    	return $this->hasOne('upgrade_system_log','mac_id','id');
 	}
 
 	/**

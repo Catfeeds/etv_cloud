@@ -113,6 +113,7 @@ class Device extends Api
 				}else{
 					Db::name('device_detail')->insert($data_detail);
 				}
+
 				if(!empty($para_log_obj)){
 					$para_data['before_info'] = $para_log_obj['after_info'];
 				}else{
@@ -121,6 +122,7 @@ class Device extends Api
 				$para_data['mac'] = $params['mac'];
 				$para_data['runtime'] = time();
 				$para_data['after_info'] = json_encode($params);
+				$para_data['after_info'] = $this->para_to_string(array_merge($data_basics,$data_detail));
 				Db::name('device_para_log')->insert($para_data);
 			}catch (\Exception $e){
 				Db::rollback();
@@ -433,5 +435,67 @@ class Device extends Api
 		}
 
 
+	}
+
+	private function para_to_string($stbinfo){
+
+		$str = "";
+		$str .="<p><strong>硬件信息</strong></p>";
+		$str .="<p>MAC地址：".$stbinfo['mac']."</p>";
+		$str .="<p>房间号：".$stbinfo['room']."</p>";
+		$str .="<p>酒店编号：".$stbinfo['custom_id']."</p>";
+		$str .="<p>软件版本：".$stbinfo['firmware_version']."</p>";
+
+		$str .="<p>ITV版本：".$stbinfo['itv_version']."</p>";
+		$str .="<p>路由固件版本：".$stbinfo['route_firmware_version']."</p>";
+
+		$str .="<p>Model：".$stbinfo['model']."</p>";
+		$str .="<p>Brand：".$stbinfo['brand']."</p>";
+		$str .="<p>Board：".$stbinfo['board']."</p>";
+
+		$str .="<p><strong>网络模式</strong></p>";
+		$str .="<p>模式：".$stbinfo['network_mode']."</p>";
+		$str .="<p>ITV模式：".$stbinfo['itv_mode']."</p>";
+		$str .="<p>WAN模式：".$stbinfo['wan_mode']."</p>";
+
+		$str .="<p>VLAN号：".$stbinfo['vlan_number']."</p>";
+		$str .="<p>VLAN状态：".$stbinfo['vlan_status']."</p>";
+
+		$str .="<p><strong>ITV参数</strong></p>";
+		$str .="<p>itv_dhcp_user：".$stbinfo['itv_dhcp_user']."</p>";
+		$str .="<p>itv_dhcp_pwd：".$stbinfo['itv_dhcp_pwd']."</p>";
+		$str .="<p>itv_pppoe_user：".$stbinfo['itv_pppoe_user']."</p>";
+		$str .="<p>itv_pppoe_pwd：".$stbinfo['itv_pppoe_pwd']."</p>";
+
+		$str .="<p>itv_pppoe_ip：".$stbinfo['itv_pppoe_ip']."</p>";
+		$str .="<p>itv_dhcp_ip：".$stbinfo['itv_dhcp_ip']."</p>";
+		$str .="<p>itv_dhcp+_ip：".$stbinfo['itv_dhcp_plus_ip']."</p>";
+
+		$str .="<p>itv_static_ip：".$stbinfo['itv_static_ip']."</p>";
+		$str .="<p>itv_netmask：".$stbinfo['itv_netmask']."</p>";
+		$str .="<p>itv_gateway：".$stbinfo['itv_gateway']."</p>";
+		$str .="<p>itv_dns1：".$stbinfo['itv_dns1']."</p>";
+		$str .="<p>itv_dns2：".$stbinfo['itv_dns2']."</p>";
+
+		$str .="<p><strong>WAN参数</strong></p>";
+		$str .="<p>wan_pppoe_user：".$stbinfo['wan_pppoe_user']."</p>";
+		$str .="<p>wan_pppoe_pwd：".$stbinfo['wan_pppoe_pwd']."</p>";
+
+		$str .="<p>wan_pppoe_ip：".$stbinfo['wan_pppoe_ip']."</p>";
+		$str .="<p>wan_dhcp_ip：".$stbinfo['wan_dhcp_ip']."</p>";
+
+		$str .="<p>wan_static_ip：".$stbinfo['wan_static_ip']."</p>";
+		$str .="<p>wan_netmask：".$stbinfo['wan_netmask']."</p>";
+		$str .="<p>wan_gateway：".$stbinfo['wan_gateway']."</p>";
+		$str .="<p>wan_dns1：".$stbinfo['wan_dns1']."</p>";
+		$str .="<p>wan_dns2：".$stbinfo['wan_dns2']."</p>";
+
+		$str .="<p><strong>其他</strong></p>";
+		$str .="<p>业务账号：".$stbinfo['aaa_account']."</p>";
+		$str .="<p>业务密码：".$stbinfo['aaa_passwd']."</p>";
+		$str .="<p>最近上线IP：".$stbinfo['last_visit_ip']."</p>";
+		$str .="<p>最近上线时间：".date("Y-m-d H:i:s", $stbinfo['last_visit_time'])."</p>";
+
+		return $str;
 	}
 }

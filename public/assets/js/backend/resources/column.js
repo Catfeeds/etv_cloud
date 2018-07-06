@@ -37,10 +37,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             '<a href="javascript:;" class="btn btn-success btn-xs btn-toggle"><i class="fa fa-chevron-up"></i></a>',
                             operate: false, formatter: Controller.api.formatter.subnode
                         },
-                        {field: 'audit_status', title: __('Audit_status'),
-                            formatter: Controller.api.formatter.audit_status,
-                            searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
-                        }
+                        // {field: 'audit_status', title: __('Audit_status'),
+                        //     formatter: Controller.api.formatter.audit_status,
+                        //     searchList: {"unaudited":__('Unaudited'),"no egis":__('No egis'), "egis":__('Egis')}
+                        // }
                     ]
                 ],
                 showToggle: false,

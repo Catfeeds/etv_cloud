@@ -395,7 +395,6 @@ class Custom extends Api
 
 			$selected_id_list = []; //选取ID集合
 			$column_weigh_setting = [];  //栏目权重设置集合
-			$column_audit_status_setting = []; //栏目发布设置集合
 			$first_column_save_setting = []; //一级栏目保存地址设置集合
 			//循环处理数据
 			foreach ($basic_obj as $key=>$value){
@@ -417,13 +416,7 @@ class Custom extends Api
 						$column_weigh_setting[$column_id] = $weigh_value;
 					}
 				}
-				//栏目发布状态设置
-				if(!empty($value['column_audit_status'])){
-					$one_column_audit_status = json_decode($value['column_audit_status'], true);
-					foreach ($one_column_audit_status as $column_id=>$audit_status_value){
-						$column_audit_status_setting[$column_id] = $audit_status_value;
-					}
-				}
+
 				//一级栏目保存设置
 				$first_column_save_setting[$value['rid']] = $value['save_set'];
 			}
@@ -433,7 +426,6 @@ class Custom extends Api
 				$this->success('Success', null, 0);
 
 			$where_column['id'] = ['in', $selected_id_list];
-			$where_column['audit_status'] = 'egis';
 			$field_column = 'id,pid,fpid,level,column_type,title,filepath,language_type';
 			$column_obj = Db::name('column')->where($where_column)
 							->field($field_column)
@@ -448,8 +440,7 @@ class Custom extends Api
 				}
 				//栏目权重设置
 				$column_obj[$key]['weigh'] = isset($column_weigh_setting[$value['id']])?$column_weigh_setting[$value['id']]:100;
-				//栏目发布状态设置
-				$column_obj[$key]['audit_status'] = isset($column_audit_status_setting[$value['id']])?$column_audit_status_setting[$value['id']]:'no release';
+
 			}
 			$cache_time = Config::get('api_cache_time');
 			$column_cache_time = isset($cache_time['column'])? $cache_time['column']: 10;

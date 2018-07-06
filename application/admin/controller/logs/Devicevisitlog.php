@@ -3,6 +3,9 @@
 namespace app\admin\controller\logs;
 
 use app\common\controller\Backend;
+use think\Db;
+use think\Exception;
+use think\Log;
 
 /**
  * 
@@ -23,12 +26,66 @@ class Devicevisitlog extends Backend
         $this->model = model('DeviceVisitLog');
 
     }
-    
-    /**
-     * 默认生成的控制器所继承的父类中有index/add/edit/del/multi五个基础方法、destroy/restore/recyclebin三个回收站方法
-     * 因此在当前控制器中可不用编写增删改查的代码,除非需要自己控制这部分逻辑
-     * 需要将application/admin/library/traits/Backend.php中对应的方法复制到当前控制器,然后进行修改
-     */
-    
 
+	/**
+	 * 查看
+	 */
+	public function index()
+	{
+		//设置过滤方法
+		$this->request->filter(['strip_tags']);
+		if ($this->request->isAjax())
+		{
+			$params = $this->request->get();
+			$limit = isset($params['limit'])? $params['limit']: 10;
+			$offset = isset($params['offset'])? $params['offset']: 0;
+			$filter = isset($params['filter'])? json_decode($params['filter'], true): [];
+			if (isset($filter['mac'])){
+				$device_obj = Db::name('device_basics')->where('mac','eq',$filter['mac'])->field('id')->find();
+				$partition_data = !empty($device_obj)? ['mac_id'=>$device_obj['id']]: ['mac_id'=>0];
+			}else{
+				$partition_data = [];
+			}
+			$rule = ['type'=>'mod', 'num'=>5];
+			$total = $this->model
+				->partition($partition_data,'mac_id',$rule)
+				->count();
+
+			$list = $this->model
+				->partition($partition_data,'mac_id',$rule)
+				->order('post_time desc')
+				->limit($offset, $limit)
+				->select();
+
+			$list = collection($list)->toArray();
+			$result = array("total" => $total, "rows" => $list);
+
+			return json($result);
+		}
+		return $this->view->fetch();
+	}
+    
+	public function delete()
+	{
+		$params = $this->request->post();
+		if(empty($params)){
+			echo 0;
+		}
+		Db::startTrans();
+		$rule = ['type'=>'mod', 'num'=>5];
+		foreach ($params['params'] as $key=>$value){
+			try{
+				$mix_data = explode("_",$value);
+				$partition_data = ['mac_id'=>$mix_data['1']];
+				Db::name('device_visit_log')->partition($partition_data, 'mac_id', $rule)->where('id','eq',$mix_data['0'])->delete();
+			}catch (\Exception $e){
+				Log::write('设备访问日志删除失败,错误原因如下: '.$e->getMessage());
+				Log::save();
+				Db::rollback();
+				echo -1;
+			}
+		}
+		Db::commit();
+		echo 1;
+	}
 }

@@ -20,30 +20,6 @@ class Profile extends Backend
      */
     public function index()
     {
-        //设置过滤方法
-        $this->request->filter(['strip_tags']);
-        if ($this->request->isAjax())
-        {
-            $model = model('AdminLog');
-            list($where, $sort, $order, $offset, $limit) = $this->buildparams();
-
-            $total = $model
-                    ->where($where)
-                    ->where('admin_id', $this->auth->id)
-                    ->order($sort, $order)
-                    ->count();
-
-            $list = $model
-                    ->where($where)
-                    ->where('admin_id', $this->auth->id)
-                    ->order($sort, $order)
-                    ->limit($offset, $limit)
-                    ->select();
-
-            $result = array("total" => $total, "rows" => $list);
-
-            return json($result);
-        }
         return $this->view->fetch();
     }
 

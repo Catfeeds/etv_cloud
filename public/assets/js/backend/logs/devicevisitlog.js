@@ -6,10 +6,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Table.api.init({
                 extend: {
                     index_url: 'logs/devicevisitlog/index',
-                    add_url: 'logs/devicevisitlog/add',
-                    edit_url: 'logs/devicevisitlog/edit',
-                    del_url: 'logs/devicevisitlog/del',
-                    multi_url: 'logs/devicevisitlog/multi',
                     table: 'device_visit_log',
                 }
             });
@@ -26,16 +22,47 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {checkbox: true},
                         {field: 'id', title: __('Id')},
                         {field: 'mac', title: __('Mac')},
-                        {field: 'mac_id', title: __('Mac_id')},
-                        {field: 'message', title: __('Message')},
-                        {field: 'post_time', title: __('Post_time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime},
-                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {field: 'message', title: __('Message'), operate:false},
+                        {field: 'post_time', title: __('Post_time'), operate:false, formatter: Table.api.formatter.datetime}
                     ]
-                ]
+                ],
+                search:false,
+                showToggle:false,
+                showColumns:false,
+                showExport:false
             });
 
             // 为表格绑定事件
             Table.api.bindevent(table);
+
+            //删除
+            $(".toolbar").on('click', '.btn-delete',function () {
+                var arr = new Array();
+                $.each(table.bootstrapTable('getSelections'), function (index, row) {
+                    arr.push(row['id'] + '_' + row['mac_id']);
+                });
+                $.ajax({
+                    url: 'logs/devicevisitlog/delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'params': arr},
+                })
+                .done(function(data) {
+                    if(data == 0){
+                        Toastr.error(__('No rows were deleted'));
+                    }else if(data == 1){
+                        Toastr.success(__('Operation completed'));
+                    }else if(data == -1){
+                        Toastr.error(__('Operation failed'));
+                    }
+                })
+                .fail(function() {
+                    Toastr.error(__('Operation failed'));
+                })
+                .always(function() {
+                    $('.btn-refresh').trigger('click');
+                });
+            });
         },
         add: function () {
             Controller.api.bindevent();

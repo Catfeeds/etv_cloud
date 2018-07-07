@@ -110,10 +110,13 @@ class Custom extends Api
 		if(!empty($custom_obj)){
 			$where['wc.status'] = 'normal';
 			$where['wc.custom_id'] = $custom_obj['id'];
-			$where['wr.audit_status'] = 'egis';
+			$egis_status = $this->request->get('egis_status');
+			if($egis_status != 'none'){
+				$where['wr.audit_status'] = 'egis';
+			}
 			$cache_time = Config::get('api_cache_time');
 			$welcome_cache_time = isset($cache_time['welcome'])? $cache_time['welcome']: 10;
-			$field = 'wc.id, wc.title, wc.stay_set, wc.stay_time, wc.weigh, wc.audit_status, wr.filepath, wr.file_type, wr.size';
+			$field = 'wc.id, wc.title, wc.stay_set, wc.stay_time, wc.weigh, wc.audit_status as release_status, wr.filepath, wr.file_type, wr.size, wr.audit_status as egis_status';
 			try{
 				$welcome_obj = Db::name('welcome_custom')
 					->alias('wc')
@@ -285,12 +288,15 @@ class Custom extends Api
 			//获取跳转资源
 			$where_resource['jc.custom_id'] = $custom_obj['id'];
 			$where_resource['jc.status'] = 'normal';
-			$where_resource['jr.audit_status'] = 'egis';
-			$field = 'jc.audit_status, jr.filepath, jr.file_type, jr.size';
+			$egis_status = $this->request->get('egis_status');
+			if('none' != $egis_status){
+				$where_resource['jr.audit_status'] = 'egis';
+			}
+			$field = 'jc.audit_status as release_status, jr.filepath, jr.file_type, jr.size, jr.audit_status as egis_status';
 			try{
 				$resource_obj = Db::name('jump_custom')
 					->alias('jc')
-					->where($where)
+					->where($where_resource)
 					->join('zxt_jump_resource jr', 'jc.rid=jr.id','LEFT')
 					->field($field)
 					->cache($jump_cache_time)
@@ -320,8 +326,11 @@ class Custom extends Api
 			$propaganda_cache_time = isset($cache_time['propaganda'])? $cache_time['propaganda']: 10;
 			$where['pc.custom_id'] = $custom_obj['id'];
 			$where['pc.status'] = 'normal';
-			$where['pr.audit_status'] = 'egis';
-			$field = 'pr.title, pr.filepath, pr.size, pr.file_type, pc.weigh, pc.save_set, pc.audit_status';
+			$egis_status = $this->request->get('egis_status');
+			if('none' != $egis_status){
+				$where['pr.audit_status'] = 'egis';
+			}
+			$field = 'pr.title, pr.filepath, pr.size, pr.file_type, pr.audit_status as egis_status, pc.weigh, pc.save_set, pc.audit_status as release_status';
 			try{
 				$propagand_obj = Db::name('propaganda_custom')
 					->alias('pc')
@@ -350,14 +359,18 @@ class Custom extends Api
 		if(!empty($custom_obj)){
 			$where['sc.custom_id'] = $custom_obj['id'];
 			$where['sc.status'] = 'normal';
-			$where['sr.audit_status'] = 'egis';
+			$egis_status = $this->request->get('egis_status');
+			if('none' != $egis_status){
+				$where['sr.audit_status'] = 'egis';
+			}
 			$cache_time = Config::get('api_cache_time');
 			$simplead_cache_time = isset($cache_time['simplead'])? $cache_time['simplead']: 10;
-			$field = 'sc.title, sc.url_to, sc.audit_status, sr.filepath, sr.file_type, sr.size';
+			$field = 'sc.title, sc.url_to, sc.audit_status as release_status, sr.filepath, sr.file_type, sr.size, sr.audit_status as egis_status';
 			try{
 				$simplead_obj = Db::name('simplead_custom')
 									->alias('sc')
 									->where($where)
+									->cache($simplead_cache_time)
 									->join('zxt_simplead_resource sr', 'sc.rid=sr.id', 'LEFT')
 									->field($field)
 									->select();
@@ -470,8 +483,11 @@ class Custom extends Api
 				$this->success('Success', $resource_cache, 0);
 
 			$where['column_pid'] = $column_id;
-			$where['audit_status'] = 'egis';
-			$field = 'id,column_fpid,title,describe,resource_type,resource,size';
+			$egis_status = $this->request->get('egis_status');
+			if ('none' != $egis_status){
+				$where['audit_status'] = 'egis';
+			}
+			$field = 'id,column_fpid,title,describe,resource_type,resource,size,audit_status as egis_status';
 			try{
 				$resource_obj = Db::name('col_resource')->where($where)->field($field)->select();
 			}catch (PDOException $e){
@@ -492,12 +508,12 @@ class Custom extends Api
 			//资源发布数据为空,默认为未发布
 			if(empty($column_custom_obj['resource_audit_status'])){
 				foreach ($resource_obj as $key=>$value){
-					$resource_obj[$key]['audit_status'] = 'no release';
+					$resource_obj[$key]['release_status'] = 'no release';
 				}
 			}else{
 				$audit_status_info = json_decode($column_custom_obj['resource_audit_status'], true);
 				foreach ($resource_obj as $key=>$value){
-					$resource_obj[$key]['audit_status'] = isset($audit_status_info[$value['id']])?$audit_status_info[$value['id']]:'no release';
+					$resource_obj[$key]['release_status'] = isset($audit_status_info[$value['id']])?$audit_status_info[$value['id']]:'no release';
 				}
 			}
 			$cache_time = Config::get('api_cache_time');

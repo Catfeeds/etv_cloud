@@ -28,8 +28,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             formatter: Controller.api.formatter.thumb},
                         {field: 'resource', title: __('Resource'), operate:false,
                             formatter: Controller.api.formatter.url},
-                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange',
-                            formatter: Table.api.formatter.datetime, operate:false},
+                        {field: 'createtime', title: __('Createtime'), addclass:'datetimerange', formatter: Table.api.formatter.datetime, operate:false},
                         {field: 'updatetime', title: __('Updatetime'),
                             formatter: Table.api.formatter.datetime, operate:false},
                         {field: 'audit_status', title: __('Audit_status'),
@@ -51,8 +50,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 var ids = Table.api.selectedids(table);
                 element = this;
                 var data = element ? $(element).data() : {};
-                var options = table.bootstrapTable('getOptions');
-                var url = options.extend.audit_url;
+                var url = table.bootstrapTable('getOptions').extend.audit_url;
                 url = Table.api.replaceurl(url, {ids: ids}, table);
                 var params = typeof data.params !== "undefined" ? (typeof data.params == 'object' ? $.param(data.params) : data.params) : '';
                 var options = {url: url, data: {ids: ids, params: params}};

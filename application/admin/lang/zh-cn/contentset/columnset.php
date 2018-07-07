@@ -15,7 +15,7 @@ return [
 	'Language_type'         =>  '语言类型',
 	'Createtime'            =>  '创建时间',
 	'Updatetime'            =>  '更新时间',
-	'Audit status'          =>  '发布状态',
+	'Audit status'          =>  '审核状态',
 	'Egis status'           =>  '审核状态',
 	'Release status'        =>  '发布状态',
 	'Toggle all'            =>  '展开全部',

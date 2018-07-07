@@ -33,7 +33,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'weigh', title: __('Weigh')},
                         {field: 'save_set', title: __('Save_set'), formatter: Controller.api.formatter.save_set_text},
                         {field: 'status', title: __('Status'), events: Controller.api.events.operate, formatter: Controller.api.formatter.status},
-                        // {field: 'audit_status', title:__('Audit status'), formatter:Controller.api.formatter.audit_status_text},
                         {field: 'rid', title:'<a href="javascript:;" class="btn btn-success btn-xs btn-toggle"><i class="fa fa-chevron-up"></i></a>',
                             operate: false, formatter: Controller.api.formatter.subnode
                         },
@@ -142,7 +141,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        //{field: 'id', title: __('ID')},
                         {field: 'title', title: __('Title')},
                         {field: 'resource', title: __('Preview'), operate:false, formatter: Controller.api.formatter.thumb},
                         {field: 'resource', title: __('Resources'), operate:false,formatter: Controller.api.formatter.url},

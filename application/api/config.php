@@ -13,7 +13,7 @@ return [
 		'propaganda'=>  60,
 		'simplead'  =>  10,
 		'column'    =>  60,
-		'resource'  =>  60,
+		'resource'  =>  5,
 		'popup'     =>  60,
 
 		'device_order'      =>  30,

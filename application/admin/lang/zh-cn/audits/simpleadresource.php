@@ -11,4 +11,6 @@ return [
 	'Audit to normal'   =>  '审核通过',
 	'Audit to hidden'   =>  '不通过审核',
 	'Describe'          =>  '描述',
+	'Preview'           =>  '预览',
+	'Updatetime'        =>  '更新时间'
 ];

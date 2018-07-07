@@ -16,4 +16,5 @@ return [
 	'Url'           =>  'URL链接',
 	'Resource type empty' =>  '资源类型不能为空',
 	'Preview'       =>  '预览',
+	'Release_status'=>  '发布状态'
 ];

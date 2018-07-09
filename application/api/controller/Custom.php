@@ -1,9 +1,4 @@
 <?php
-/**
- * User: Lockin
- * Date: 2018/6/19 14:41
- * 客户资源接口类
- */
 
 namespace app\api\controller;
 
@@ -11,7 +6,7 @@ use app\common\controller\Api;
 use think\Cache;
 use think\Config;
 use think\Db;
-use think\Debug;
+use think\Exception;
 use think\exception\PDOException;
 use think\Log;
 
@@ -21,7 +16,7 @@ class Custom extends Api
 	protected $noNeedLogin = ['*'];
 
 	protected $beforeActionList = [
-		'check_params'      =>  ['except'=>'custom_list']
+		'check_params'      =>  ['except'=>'custom_list,audit_login,audit_process_notcolumn,audit_process_column_resource']
 	];
 
 	/**
@@ -33,6 +28,49 @@ class Custom extends Api
 		if(empty($custom_id) || empty($mac)){
 			$this->error(__('Parameter error'), [], -1);
 		}
+	}
+
+	/**
+	 * 审核发布管理账号登录
+	 * @params username
+	 * @params password
+	 */
+	public function audit_login() {
+		$params = $this->request->get();
+		if(empty($params['username']) || empty($params['password'])){
+			$this->error(__('Parameter error'), [], -1);
+		}
+		$field = 'password,salt,loginfailure,logintime,token,status,c.group_id';
+		$admin_obj = Db::name('admin')->alias('a')->where('username','eq',$params['username'])->field($field)->join('auth_group_access c','a.id=c.uid')->find();
+		if($admin_obj){
+			if($admin_obj['status'] == 'hidden'){
+				$this->error(__('Parameter hidden'), null, -2);
+			}
+			if ($admin_obj['loginfailure'] > 5){
+				$this->error(__('Login failure times error'), null, -2);
+			}
+			if ($admin_obj['group_id'] != Config::get('audit_group')){
+				$this->error(__('Group Error'), null, -2);
+			}
+			if($admin_obj['password'] == md5(md5($params['password']).$admin_obj['salt']))
+			{
+				$token = md5($params['username'].time());
+				try{
+					Db::name('admin')->where('username','eq',$params['username'])->update(['token'=>$token, 'logintime'=>time()]);
+				}catch (\Exception $e){
+					Log::write('账号登录出错,错误信息如下:'.$e->getMessage());
+					Log::save();
+					$this->error('账号登录出错', null, -5);
+				}
+				$this->success('Success',['token'=>$token],0);
+			}else{
+				Db::name('admin')->where('username','eq',$params['username'])->setInc('loginfailure');
+				$this->error(__('Invalid parameters'), null, -2);
+			}
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+
+
 	}
 
 	/**
@@ -292,7 +330,7 @@ class Custom extends Api
 			if('none' != $egis_status){
 				$where_resource['jr.audit_status'] = 'egis';
 			}
-			$field = 'jc.audit_status as release_status, jr.filepath, jr.file_type, jr.size, jr.audit_status as egis_status';
+			$field = 'jc.id,jc.audit_status as release_status, jr.filepath, jr.file_type, jr.size, jr.audit_status as egis_status';
 			try{
 				$resource_obj = Db::name('jump_custom')
 					->alias('jc')
@@ -330,7 +368,7 @@ class Custom extends Api
 			if('none' != $egis_status){
 				$where['pr.audit_status'] = 'egis';
 			}
-			$field = 'pr.title, pr.filepath, pr.size, pr.file_type, pr.audit_status as egis_status, pc.weigh, pc.save_set, pc.audit_status as release_status';
+			$field = 'pc.id,pr.title, pr.filepath, pr.size, pr.file_type, pr.audit_status as egis_status, pc.weigh, pc.save_set, pc.audit_status as release_status';
 			try{
 				$propagand_obj = Db::name('propaganda_custom')
 					->alias('pc')
@@ -365,7 +403,7 @@ class Custom extends Api
 			}
 			$cache_time = Config::get('api_cache_time');
 			$simplead_cache_time = isset($cache_time['simplead'])? $cache_time['simplead']: 10;
-			$field = 'sc.title, sc.url_to, sc.audit_status as release_status, sr.filepath, sr.file_type, sr.size, sr.audit_status as egis_status';
+			$field = 'sc.id, sc.title, sc.url_to, sc.audit_status as release_status, sr.filepath, sr.file_type, sr.size, sr.audit_status as egis_status';
 			try{
 				$simplead_obj = Db::name('simplead_custom')
 									->alias('sc')
@@ -540,7 +578,7 @@ class Custom extends Api
 			//弹窗广告列表
 			$where['custom_id'] = $custom_obj['id'];
 			$where['status'] = 'normal';
-			$field = 'ad_type, save_set, repeat_set, break_set, weekday, no_repeat_date, start_time, stay_time, position, words_tips,resource_id';
+			$field = 'id, ad_type, save_set, repeat_set, break_set, weekday, no_repeat_date, start_time, stay_time, position, words_tips,resource_id';
 			try{
 				$popup_setting_obj = Db::name('popup_setting')->where($where)->field($field)->select();
 			}catch (PDOException $e){
@@ -563,7 +601,7 @@ class Custom extends Api
 			$resource_list = [];  //资源列表
 			if(!empty($rids)){
 				//弹窗广告资源列表
-				$resource_field = 'id, title, filepath, file_type, size';
+				$resource_field = 'id as rid, title, filepath, file_type, size';
 				try{
 					$resource_where['id'] = ['in', $rids];
 					$resource_where['audit_status'] = 'egis';
@@ -575,7 +613,7 @@ class Custom extends Api
 				}
 				if(!empty($resource_obj)){
 					foreach ($resource_obj as $k=>$v){
-						$resource_list[$v['id']] = $v;
+						$resource_list[$v['rid']] = $v;
 					}
 				}
 			}
@@ -669,5 +707,92 @@ class Custom extends Api
 			->find();
 		$this->success('Success', $obj, 0);
 	}
+
+	/**
+	 * 上传-发布结果(非栏目资源)
+	 * @param   audit_type 类型
+	 * @param   audit_module 操作模块
+	 * @param   audit_list_id 模块数据列表ID
+	 * @param   audit_value 操作值
+	 */
+	public function audit_process_notcolumn() {
+		$header_info = $this->request->header();
+		if(!isset($header_info['audit_token']) || empty($header_info['audit_token'])){
+			$this->error(__('Parameter error'), [], -1);
+		}
+
+		$params = $this->request->post();
+		// 参数检验
+		$validate_result = $this->validate($params, 'Auditprocess.not_column');
+		if(true !== $validate_result){
+			$this->error(__('Parameter error'), [], -1);
+		}
+
+		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
+		if(!empty($admin_obj) && Config::get('audit_group') == $admin_obj['group_id']){
+			$audit_module = Config::get($params['audit_module']);
+			$process_table = $audit_module[$params['audit_type']]; //获取需要操作的表
+			try{
+				Db::name($process_table)->where('id','eq',$params['audit_list_id'])->update(['audit_status'=>$params['audit_value']]);
+				Db::name('admin')->where('id','eq',$admin_obj['id'])->setField('logintime',time());
+			}catch (Exception $e){
+				Log::write('上传审核发布结果接口出错,错误信息如下:'.$e->getMessage());
+				Log::save();
+				$this->error('传审核发布结果接口出错', null, -5);
+			}
+			$this->success('Success',null,0);
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
+	/**
+	 * 上传-发布结果(栏目资源)
+	 * @param custom_id 客户编号
+	 * @param audit_list_id 列表ID
+	 * @param audit_value 操作值
+	 */
+	public function audit_process_column_resource() {
+		$header_info = $this->request->header();
+		if(!isset($header_info['audit_token']) || empty($header_info['audit_token'])){
+			$this->error(__('Parameter error'), [], -1);
+		}
+		$params = $this->request->post();
+		// 参数检验
+		$validate_result = $this->validate($params, 'Auditprocess.column_resource');
+		if(true !== $validate_result)
+			$this->error(__('Parameter error'), [], -1);
+
+		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
+		if(empty($admin_obj['id']) || $admin_obj['group_id'] != Config::get('audit_group'))
+			$this->error(__('Invalid parameters'), null, -2);
+
+		$custom_obj = Db::name('custom')->where('custom_id','eq',$params['custom_id'])->field('id')->find();
+		$resource_obj = Db::name('col_resource')->where('id','eq',$params['audit_list_id'])->field('column_fpid')->find();
+		if(!empty($custom_obj['id']) && !empty($resource_obj['column_fpid'])){
+			$where_column['custom_id'] = $custom_obj['id'];
+			$where_column['rid'] = $resource_obj['column_fpid'];
+			$column_obj = Db::name('column_custom')->where($where_column)->field('resource_audit_status')->find();
+			$update_data = [];
+			if(empty($column_obj['resource_audit_status'])){
+				$update_data['resource_audit_status'] = json_encode([$params['audit_list_id']=>$params['audit_value']]);
+			}else{
+				$release_status = json_decode($column_obj['resource_audit_status'], true);
+				$release_status[$params['audit_list_id']] = $params['audit_value'];
+				$update_data['resource_audit_status'] = json_encode($release_status);
+			}
+
+			try{
+				Db::name('column_custom')->where($where_column)->update($update_data);
+				Db::name('admin')->where('id','eq',$admin_obj['id'])->setField('logintime',time());
+			}catch (Exception $e){
+				Log::write('上传审核发布结果接口出错,错误信息如下:'.$e->getMessage());
+				Log::save();
+				$this->error('传审核发布结果接口出错', null, -5);
+			}
+			$this->success('Success',null,0);
+		}
+		$this->error(__('Invalid parameters'), null, -2);
+	}
+
 
 }

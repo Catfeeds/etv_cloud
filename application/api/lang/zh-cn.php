@@ -96,7 +96,9 @@ return [
 	'Release'                                               => '通过发布',
 	'No release'                                            => '未发布',
 	'Parameter error'                                       =>  '参数错误',
+	'Group Error'                                           =>  '该账号组不拥有权限',
 	'Parameter hidden'                                      =>  '参数不可用',
+	'Login failure times error'                             =>  '登录错误次数过多',
 
 	'Api/custom/confirm_custom'                             =>  '获取客户信息',
 	'Api/custom/custom_list'                                =>  '获取客户列表',

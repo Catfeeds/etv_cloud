@@ -17,7 +17,8 @@ class DeviceVisitLog extends Model
 	public static function record()
 	{
 		$path = request()->path();
-		if('api/custom/custom_list' != $path){
+
+		if(!in_array($path,['api/custom/custom_list', 'api/custom/audit_login', 'api/custom/audit_process'])){
 			$mac = request()->param('mac');
 			$devise_obj = Db::name('device_basics')->where('mac','eq',$mac)->field('id')->find();
 			$devise_id = isset($devise_obj['id'])? $devise_obj['id']: 0;
@@ -32,6 +33,10 @@ class DeviceVisitLog extends Model
 			}catch (\Exception $e){
 				Log::write("错误信息为:".$e->getMessage());
 				Log::save();
+			}
+		}else{
+			if($path == 'api/custom/audit_process'){
+
 			}
 		}
 

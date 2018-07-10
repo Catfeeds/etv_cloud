@@ -105,4 +105,12 @@ class Audit extends Backend
 		}
 		$this->error(__('Parameter %s can not be empty', 'ids'));
 	}
+
+	public function upgradesystem_audit($ids = "") {
+		if ($ids)
+		{
+			$this->audit_function($ids,'upgrade_system');
+		}
+		$this->error(__('Parameter %s can not be empty', 'ids'));
+	}
 }

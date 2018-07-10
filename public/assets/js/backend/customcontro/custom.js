@@ -24,23 +24,26 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id'), operate:false},
                         {field: 'custom_id', title: __('Custom_id')},
-                        {field: 'custom_name', title: __('Custom_name')},
-                        {field: 'parent_custom_name', title: __('Parent_custom_name')},
+                        {field: 'custom_name', title: __('Custom_name'), operate:false},
+                        {field: 'parent_custom_name', title: __('Parent_custom_name'), operate:false},
                         {field: 'custom_type', title: __('Custom_type'),
                             formatter: Controller.api.formatter.custom_type,
-                            searchList: {'hospital': __('Hospital'), 'hotel': __('Hotel')}, style: 'min-width:100px;'},
-                        {field: 'handler', title: __('Handler')},
-                        {field: 'phone', title: __('Phone')},
-                        {field: 'detail_address', title: __('Detail_address')},
-                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange',
+                            searchList: {'hospital': __('Hospital'), 'hotel': __('Hotel')}, style: 'min-width:100px;', operate:false},
+                        {field: 'handler', title: __('Handler'), operate:false},
+                        {field: 'phone', title: __('Phone'), operate:false},
+                        {field: 'detail_address', title: __('Detail_address'), operate:false},
+                        {field: 'createtime', title: __('Createtime'), operate:false,
                             formatter: Table.api.formatter.datetime},
-                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status},
+                        {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, operate:false},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate,
-                            formatter: Table.api.formatter.operate}
+                            formatter: Table.api.formatter.operate, operate:false}
                     ]
-                ]
+                ],
+                showToggle: false,
+                showExport: false,
+                search: false
             });
 
             // 为表格绑定事件

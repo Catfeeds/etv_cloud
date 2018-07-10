@@ -171,7 +171,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                     }
                 });
             },
-
             formatter: {
                 filepath_url: function (value, row) {
                     return '<a href="' + row.filepath_url + '" target="_blank">'+ value +'</a>';

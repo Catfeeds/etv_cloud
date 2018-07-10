@@ -24,7 +24,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function (
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id'), visible:false},
+                        {field: 'id', title: __('Id'), visible:false, operate:false},
                         {field: 'app.title', title:__('App'),operate:false},
                         {field: 'custom.custom_id', title: __('Custom_id')},
                         {field: 'custom.custom_name', title: __('Custom_name')},

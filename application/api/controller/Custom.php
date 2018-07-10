@@ -476,6 +476,12 @@ class Custom extends Api
 			if(empty($selected_id_list))
 				$this->success('Success', null, 0);
 
+			$language_type = $this->request->get('language_type');
+			if(empty($language_type)){
+				$where_column['language_type'] = 'chinese';
+			}else{
+				$where_column['language_type'] = $language_type;
+			}
 			$where_column['id'] = ['in', $selected_id_list];
 			$field_column = 'id,pid,fpid,level,column_type,title,filepath,language_type';
 			$column_obj = Db::name('column')->where($where_column)
@@ -728,8 +734,13 @@ class Custom extends Api
 			$this->error(__('Parameter error'), [], -1);
 		}
 
-		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
+		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,a.logintime,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
+
 		if(!empty($admin_obj) && Config::get('audit_group') == $admin_obj['group_id']){
+			// 判断token过期
+			if(time()-$admin_obj['logintime'] > Config::get('audit_login_time_out'))
+				$this->error('audit_token已过期', null, -3);
+
 			$audit_module = Config::get($params['audit_module']);
 			$process_table = $audit_module[$params['audit_type']]; //获取需要操作的表
 			try{
@@ -762,9 +773,12 @@ class Custom extends Api
 		if(true !== $validate_result)
 			$this->error(__('Parameter error'), [], -1);
 
-		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
+		$admin_obj = Db::name('admin')->alias('a')->where('token','eq',$header_info['audit_token'])->field('a.id,a.logintime,c.group_id')->join('auth_group_access c','a.id=c.uid')->find(); //获取客户所在组和客户ID信息
 		if(empty($admin_obj['id']) || $admin_obj['group_id'] != Config::get('audit_group'))
 			$this->error(__('Invalid parameters'), null, -2);
+		// 判断token过期
+		if(time()-$admin_obj['logintime'] > Config::get('audit_login_time_out'))
+			$this->error('audit_token已过期', null, -3);
 
 		$custom_obj = Db::name('custom')->where('custom_id','eq',$params['custom_id'])->field('id')->find();
 		$resource_obj = Db::name('col_resource')->where('id','eq',$params['audit_list_id'])->field('column_fpid')->find();

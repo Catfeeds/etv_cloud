@@ -43,6 +43,7 @@ class Sleepset extends Backend
         {
 
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+
             $Customlist_class = new Customlist();
             $customid_list = $Customlist_class->custom_id_device($this->admin_id);
             if(!is_array($customid_list) && $customid_list == config('get all')){
@@ -289,30 +290,8 @@ class Sleepset extends Backend
         $op = json_decode($op, TRUE);
         $filter = $filter ? $filter : [];
         $where = [];
-        $tableName = '';
-        if ($relationSearch)
-        {
-            if (!empty($this->model))
-            {
-                $tableName = $this->model->getQuery()->getTable() . ".";
-            }
-            $sort = stripos($sort, ".") === false ? $tableName . $sort : $sort;
-        }
-        $adminIds = $this->getDataLimitAdminIds();
-        if (is_array($adminIds))
-        {
-            $where[] = [$tableName . $this->dataLimitField, 'in', $adminIds];
-        }
-        if ($search)
-        {
-            $searcharr = is_array($searchfields) ? $searchfields : explode(',', $searchfields);
-            foreach ($searcharr as $k => &$v)
-            {
-                $v = stripos($v, ".") === false ? $tableName . $v : $v;
-            }
-            unset($v);
-            $where[] = [implode("|", $searcharr), "LIKE", "%{$search}%"];
-        }
+        $tableName = 'zxt_device_sleep'.".";
+
         foreach ($filter as $k => $v)
         {
             $sym = isset($op[$k]) ? $op[$k] : '=';

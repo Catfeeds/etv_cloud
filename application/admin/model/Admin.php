@@ -31,4 +31,8 @@ class Admin extends Model
         return $encrypt($password . $salt);
     }
 
+    public function audit_process_log(){
+    	return $this->hasMany('audit_process_log','id','id');
+    }
+
 }

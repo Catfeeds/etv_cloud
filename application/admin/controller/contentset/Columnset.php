@@ -63,7 +63,7 @@ class Columnset extends Backend
 	        return json($result);
         }
 
-	    $custom = Db::name('custom')->where('id', 'in', $custom_id_list)->field('id,custom_name')->select();
+	    $custom = Db::name('custom')->where('id', 'in', $custom_id_list)->field('id,custom_name')->order('field(id,'.implode(",",$custom_id_list).')')->select();
 	    $custom_list = [];
 	    foreach($custom as $ck => $cv) {
 		    $custom_list[$cv['id']] = $cv['custom_name'];
